@@ -2,6 +2,7 @@
 #define HERO_CLASS
 
 #include <string>
+#include "sword.h"
 
 namespace He_Arc::RPG {
     class Hero {
@@ -18,6 +19,7 @@ namespace He_Arc::RPG {
             int intelligence;
             double hp;
             std::string name;
+            Sword sword;
     };
 }
 
