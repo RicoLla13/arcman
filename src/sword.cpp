@@ -2,6 +2,6 @@
 
 Sword::Sword(int damage) : damage(damage) {}
 
-int Sword::getDagame() const {
+int Sword::getDamage() const {
     return this->damage;
 }
