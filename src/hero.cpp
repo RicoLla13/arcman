@@ -1,14 +1,27 @@
 #include "hero.h"
 #include <iostream>
 
-namespace He_Arc::RPG {
-    void Hero::interact(const Hero& otherHero) {
-        std::cout << "?: What is your name, brave hero?" << std::endl
-            << "I: I am " << this->name << ". "
-            << "To whom do I have the pleasure?" << std::endl
-            << otherHero.name << ": People call me " << otherHero.name << std::endl << std::endl;
-    }
+namespace RPG {
+    Hero::Hero() : 
+        strength(0),
+        agility(0),
+        intelligence(0),
+        hp(0),
+        name("") {}
+    Hero::Hero(
+            int _strength,
+            int _agility,
+            int _intelligence,
+            double _hp,
+            std::string _name) : 
+        strength(_strength),
+        agility(_agility),
+        intelligence(_intelligence),
+        hp(_hp),
+        name(_name) {}
+    Hero::~Hero() {}
 
+    void Hero::interact(const Hero& otherHero) {}
     void Hero::show() const {
         std::cout << "============" << std::endl
             << "HERO: " << this->name << std::endl
@@ -16,35 +29,31 @@ namespace He_Arc::RPG {
             << "strength: " << this->strength << std::endl
             << "agility: " << this-> agility << std::endl
             << "intelligence: " << this->intelligence << std::endl
-            << "HP: " << this->hp << std::endl
-            << "Sword damage: " << this->ptrSword->getDamage() << std::endl << std::endl;
+            << "HP: " << this->hp << std::endl;
     }
 
-    Hero::Hero() : strength(0), agility(0), intelligence(0), hp(0), name("") {}
-
-    Hero::Hero(const Hero& other) : strength(other.strength), agility(other.agility), intelligence(other.intelligence), name(other.name) {
-        ptrSword = new Sword(*other.ptrSword);
+    // getters
+    int Hero::getStrength() const { return this->strength; }
+    int Hero::getAgility() const { return this->agility; }
+    int Hero::getIntelligence() const {
+        return this->intelligence;
     }
-
-    Hero::Hero(int _strength, int _agility, int _intelligence, double _hp, std::string _name, Sword *ptrSword) : strength(_strength), agility(_agility), intelligence(_intelligence), hp(_hp), name(_name), ptrSword(ptrSword){}
-
-    Hero::~Hero() {
-        if(ptrSword != nullptr) {
-            delete ptrSword;
-            ptrSword = nullptr;
-        }
+    double Hero::getHp() const { return this->hp; }
+    std::string Hero::getName() const { return this->name; }
+    // setters
+    void Hero::setStrength(int _strength) {
+        this->strength = _strength;
     }
-
-    std::ostream& operator<<(std::ostream& os, const Hero& h) {
-        os << "============" << std::endl
-            << "HERO: " << h.name << std::endl
-            << "============" << std::endl
-            << "strength: " << h.strength << std::endl
-            << "agility: " << h.agility << std::endl
-            << "intelligence: " << h.intelligence << std::endl
-            << "HP: " << h.hp << std::endl
-            << "Sword damage: " << h.ptrSword->getDamage() << std::endl << std::endl;
-
-        return os;
+    void Hero::setAgility(int _agility) {
+        this->agility = _agility;
+    }
+    void Hero::setIntelligence(int _intelligence) {
+        this->intelligence = _intelligence;
+    }
+    void Hero::setHp(double _hp) {
+        this->hp = _hp;
+    }
+    void Hero::setName(std::string _name) {
+        this->name = _name;
     }
 }

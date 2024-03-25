@@ -4,27 +4,35 @@
 #include <string>
 #include "sword.h"
 
-namespace He_Arc::RPG {
+namespace RPG {
     class Hero {
-        public:
-            Hero();
-            Hero(int, int, int, double, std::string, Sword*);
-            Hero(const Hero&);
-            ~Hero();
-            void show() const;
-            void interact(const Hero&);
-            int getAgility() const;
-            friend std::ostream& operator<<(std::ostream&, const Hero&);
-
-        private:
+        protected:
             int strength = 0;
             int agility = 0;
             int intelligence = 0;
             double hp = 0.0;
             std::string name = "";
-            Sword* ptrSword = nullptr;
+
+        public:
+            Hero();
+            Hero(int, int, int, double, std::string);
+            virtual ~Hero();
+            virtual void show() const;
+            virtual void interact(const Hero&);
+
+            // getters
+            int getStrength() const;
+            int getAgility() const;
+            int getIntelligence() const;
+            double getHp() const;
+            std::string getName() const;
+            // setters
+            void setStrength(int);
+            void setAgility(int);
+            void setIntelligence(int);
+            void setHp(double);
+            void setName(std::string);
     };
 }
-
 
 #endif
