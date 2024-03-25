@@ -1,4 +1,6 @@
 #include <iostream>
+#include <list>
+#include <algorithm>
 #include "hero.h"
 #include "wizard.h"
 #include "warrior.h"
@@ -6,19 +8,22 @@
 #include "sword.h"
 
 int main(void) {
-    RPG::Warrior warrior(10, 10, 10, 2.3, "Warrior");
-    RPG::Wizard wizard(20, 20, 20, 5.3, "Wizard", 100);
-    RPG::Necromancer necromancer(20, 20, 20, 5.3, "Necromancer", 100);
+    std::list<RPG::Hero*> heroes;
 
-    warrior.show();
-    wizard.show();
-    necromancer.show();
+    RPG::Warrior* warrior1 = new RPG::Warrior(10, 10, 10, 1.2, "Warrior 1");
+    RPG::Warrior* warrior2 = new RPG::Warrior(10, 10, 10, 1.2, "Warrior 2");
+    RPG::Wizard* wizard1 = new RPG::Wizard(20, 20, 20, 1.2, "Wizard1", 10);
+    RPG::Wizard* wizard2 = new RPG::Wizard(20, 20, 20, 1.2, "Wizard2", 10);
+    RPG::Necromancer* necromancer = new RPG::Necromancer(30, 30, 30, 1.2, "Necromancer", 20);
 
-    warrior.interact(wizard);
-    wizard.interact(warrior);
-    necromancer.interact(warrior);
+    heroes.push_back(warrior1);
+    heroes.push_back(warrior2);
+    heroes.push_back(wizard1);
+    heroes.push_back(wizard2);
+    heroes.push_back(necromancer);
 
-    wizard.castSpell();
-    necromancer.riseUndeads();
+    std::for_each(heroes.begin(), heroes.end(), [](RPG::Hero* hero) {
+        hero->show();
+    });
     return 0;
 }
