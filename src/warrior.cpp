@@ -4,7 +4,6 @@
 #include <string>
 
 namespace RPG {
-    Warrior::Warrior() : Hero() {}
     Warrior::Warrior(
             int _strength,
             int _agility,

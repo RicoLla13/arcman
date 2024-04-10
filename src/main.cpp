@@ -5,7 +5,10 @@
 #include "wizard.h"
 #include "warrior.h"
 #include "necromancer.h"
+#include "i_object.h"
 #include "sword.h"
+#include "shield.h"
+#include "potion.h"
 
 int main(void) {
     std::list<RPG::Hero*> heroes;
@@ -25,5 +28,29 @@ int main(void) {
     std::for_each(heroes.begin(), heroes.end(), [](RPG::Hero* hero) {
         hero->show();
     });
+
+    RPG::Sword* sword1 = new RPG::Sword(10);
+    RPG::Sword* sword2 = new RPG::Sword(20);
+    RPG::Sword* sword3 = new RPG::Sword(30);
+
+    RPG::Shield* shield1 = new RPG::Shield(10);
+    RPG::Shield* shield2 = new RPG::Shield(20);
+
+    RPG::Potion* potion1 = new RPG::Potion(10);
+    RPG::Potion* potion2 = new RPG::Potion(20);
+
+    warrior1->backpack.pack(sword1);
+    warrior1->backpack.pack(sword2);
+    warrior1->backpack.pack(sword3);
+    warrior1->backpack.pack(shield1);
+    warrior1->backpack.pack(shield2);
+    warrior1->backpack.pack(potion1);
+    warrior1->backpack.pack(potion2);
+
+    while(warrior1->backpack.isNotEmpty()) {
+        RPG::IObject* object = warrior1->backpack.unpack();
+        object->getName();
+        delete object;
+    }
     return 0;
 }

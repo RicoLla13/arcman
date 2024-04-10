@@ -7,7 +7,6 @@
 namespace RPG {
     class Warrior : public Hero {
         public:
-            Warrior();
             Warrior(int, int, int, double, std::string);
             ~Warrior();
             void interact(const Hero&) override;

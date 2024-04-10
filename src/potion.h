@@ -1,16 +1,15 @@
-#ifndef SWORD_CLASS
-#define SWORD_CLASS
+#ifndef POTION_CLASS
+#define POTION_CLASS
 
 #include "i_object.h"
 
 namespace RPG {
-    class Sword : public IObject {
+    class Potion : public IObject {
         private:
-            int damage;
-
+            int power;
         public:
-            Sword(int);
-            int getDamage() const;
+            Potion(int);
+            int getPower() const;
             void getName() const override;
             void getFeature() const override;
     };
