@@ -9,4 +9,5 @@ to make compialtion instructions
 
 ## 🛠️ Dependencies
 
+![SFML Logo](https://www.sfml-dev.org/images/logo.png)
 * SFML 2.6.1 or higher
