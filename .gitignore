@@ -2,7 +2,8 @@
 *
 
 # Include src folder
-!src
+!src/
+!src/*
 
 # Include CMakeLists
 !CMakeLists.txt
@@ -11,4 +12,5 @@
 !README.md
 
 # Include assets
-!assets
+!assets/
+!assets/*
