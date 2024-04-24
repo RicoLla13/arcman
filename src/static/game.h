@@ -7,12 +7,12 @@
 
 class Game {
     private:
+        const int frame_rate = 60;
         const int sprite_scale = 3;
         const int sprite_size = 16;
 
         int window_width = 15 * sprite_size * sprite_scale;
         int window_height = 18 * sprite_size * sprite_scale;
-        int frame_rate = 60;
     
         std::string background_image = "assets/Level_1.png";
 

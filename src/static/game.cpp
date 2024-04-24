@@ -1,4 +1,7 @@
 #include "game.h"
+#include "../entity/player.h"
+#include "../exception/custom_exception.h"
+
 #include <iostream>
 
 Game::Game() {
@@ -17,25 +20,19 @@ Game& Game::getInstance() {
 
 void Game::gameLoop() {
     sf::Texture background_texture;
-    background_texture.loadFromFile(background_image);
+    if(!background_texture.loadFromFile(background_image))
+        throw CustomException("[!] #gameLoop()# -> Background image not found!");
 
     sf::Sprite background(background_texture);
     background.setScale(sprite_scale, sprite_scale);
 
-    sf::Texture texture;
-    texture.loadFromFile("assets/Player.png");
+    sf::Texture player_texture;
+    if(!player_texture.loadFromFile("assets/Player.png"))
+        throw CustomException("[!] #gameLoop()# -> Player image not found!");
 
-    sf::Sprite sprite(texture);
-    sprite.setScale(sprite_scale, sprite_scale);
-
-    int frame_count = 0;
-    const int update_rate = 4;
-    int hor_offset = 0;
-    int ver_offset = 0;
-    float movement_speed = 5.0f;
-    float y_speed = 0.0f;
-    float x_speed = movement_speed;
-    sprite.setPosition(window_width / 2, window_height / 2);
+    Player player(100, 100, 5.0f, player_texture);
+    player.setScale(sprite_scale, sprite_scale);
+    player.setTextureRect(sf::IntRect(0, 0, sprite_size, sprite_size));
 
     while (window.isOpen()) {
         sf::Event event;
@@ -44,52 +41,28 @@ void Game::gameLoop() {
                 window.close();
         }
 
-        frame_count++;
-        if(frame_count >= frame_rate) 
-            frame_count = 0;
-        if(frame_count % 4 == 0)
-            hor_offset++;
-        if(hor_offset > 1)
-            hor_offset = 0;
-
-        // Handle keyboard input
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-            y_speed = -movement_speed;
-            x_speed = 0.0f;
-            ver_offset = 3;
+            player.setDirection(0, -1);
+            player.setTextureRect(sf::IntRect(0, 3 * sprite_size, sprite_size, sprite_size));
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-            y_speed = movement_speed;
-            x_speed = 0.0f;
-            ver_offset = 1;
+            player.setDirection(0, 1);
+            player.setTextureRect(sf::IntRect(0, sprite_size, sprite_size, sprite_size));
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            x_speed = -movement_speed;
-            y_speed = 0.0f;
-            ver_offset = 2;
+            player.setDirection(-1, 0);
+            player.setTextureRect(sf::IntRect(0, 2 * sprite_size, sprite_size, sprite_size));
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            x_speed = movement_speed;
-            y_speed = 0.0f;
-            ver_offset = 0;
+            player.setDirection(1, 0);
+            player.setTextureRect(sf::IntRect(0, 0, sprite_size, sprite_size));
         }
 
-        sprite.move(x_speed, y_speed);
-
-        if(sprite.getPosition().x + 16 * sprite_scale < 0)
-            sprite.setPosition(window_width, sprite.getPosition().y);
-        if(sprite.getPosition().x > window_width)
-            sprite.setPosition((-16) * sprite_scale, sprite.getPosition().y);
-        if(sprite.getPosition().y + 16 * sprite_scale < 0)
-            sprite.setPosition(sprite.getPosition().x, window_height);
-        if(sprite.getPosition().y > window_height)
-            sprite.setPosition(sprite.getPosition().x, (-16) * sprite_scale);
-
-        sprite.setTextureRect(sf::IntRect(hor_offset * 17 + 1, ver_offset * 17 + 1, 16, 16));
+        player.move();
 
         window.clear();
         window.draw(background);
-        window.draw(sprite);
+        window.draw(player);
         window.display();
     }
 }
