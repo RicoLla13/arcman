@@ -16,11 +16,13 @@ Game& Game::getInstance() {
 }
 
 void Game::gameLoop() {
+    int scale = 4;
+
     sf::Texture texture;
     texture.loadFromFile("assets/Player.png");
 
     sf::Sprite sprite(texture);
-    sprite.setScale(4, 4);
+    sprite.setScale(scale, scale);
 
     int frame_count = 0;
     const int update_rate = 4;
@@ -29,7 +31,7 @@ void Game::gameLoop() {
     float movement_speed = 5.0f;
     float y_speed = 0.0f;
     float x_speed = movement_speed;
-    sprite.setPosition(0, 0);
+    sprite.setPosition(window_width / 2, window_height / 2);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -69,6 +71,15 @@ void Game::gameLoop() {
         }
 
         sprite.move(x_speed, y_speed);
+
+        if(sprite.getPosition().x + 16 * scale < 0)
+            sprite.setPosition(window_width, sprite.getPosition().y);
+        if(sprite.getPosition().x > window_width)
+            sprite.setPosition((-16) * scale, sprite.getPosition().y);
+        if(sprite.getPosition().y + 16 * scale < 0)
+            sprite.setPosition(sprite.getPosition().x, window_height);
+        if(sprite.getPosition().y > window_height)
+            sprite.setPosition(sprite.getPosition().x, (-16) * scale);
 
         sprite.setTextureRect(sf::IntRect(hor_offset * 17 + 1, ver_offset * 17 + 1, 16, 16));
 
