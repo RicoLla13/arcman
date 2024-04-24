@@ -10,7 +10,10 @@ FetchContent_Declare(SFML
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(Arcman src/main.cpp)
+# Gather all .cpp files recursively in the src directory and its subdirectories
+file(GLOB_RECURSE SRC_FILES "src/*.cpp" "src/*/*.cpp")
+
+add_executable(Arcman ${SRC_FILES})
 target_link_libraries(Arcman PRIVATE sfml-graphics)
 target_compile_features(Arcman PRIVATE cxx_std_17)
 

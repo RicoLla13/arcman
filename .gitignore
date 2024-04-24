@@ -1,16 +1,10 @@
-# Exclude all
+# Ignore all files and directories
 *
 
-# Include src folder
+# Except for specific files and directories
 !src/
-!src/*
-
-# Include CMakeLists
-!CMakeLists.txt
-
-# Include README
-!README.md
-
-# Include assets
+!src/**
 !assets/
-!assets/*
+!assets/**
+!CMakeLists.txt
+!README.md
