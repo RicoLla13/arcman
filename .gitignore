@@ -1,1 +1,11 @@
-*.o
+# Exclude all
+*
+
+# Include src folder
+!src
+
+# Include CMakeLists
+!CMakeLists.txt
+
+# Include README
+!README.md
