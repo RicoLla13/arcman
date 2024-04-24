@@ -7,9 +7,15 @@
 
 class Game {
     private:
-        int window_width = 800;
-        int window_height = 600;
+        const int sprite_scale = 3;
+        const int sprite_size = 16;
+
+        int window_width = 15 * sprite_size * sprite_scale;
+        int window_height = 18 * sprite_size * sprite_scale;
         int frame_rate = 60;
+    
+        std::string background_image = "assets/Level_1.png";
+
         std::string window_title = "ARCMAN";
 
         Game();

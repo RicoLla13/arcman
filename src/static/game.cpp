@@ -16,13 +16,17 @@ Game& Game::getInstance() {
 }
 
 void Game::gameLoop() {
-    int scale = 4;
+    sf::Texture background_texture;
+    background_texture.loadFromFile(background_image);
+
+    sf::Sprite background(background_texture);
+    background.setScale(sprite_scale, sprite_scale);
 
     sf::Texture texture;
     texture.loadFromFile("assets/Player.png");
 
     sf::Sprite sprite(texture);
-    sprite.setScale(scale, scale);
+    sprite.setScale(sprite_scale, sprite_scale);
 
     int frame_count = 0;
     const int update_rate = 4;
@@ -72,18 +76,19 @@ void Game::gameLoop() {
 
         sprite.move(x_speed, y_speed);
 
-        if(sprite.getPosition().x + 16 * scale < 0)
+        if(sprite.getPosition().x + 16 * sprite_scale < 0)
             sprite.setPosition(window_width, sprite.getPosition().y);
         if(sprite.getPosition().x > window_width)
-            sprite.setPosition((-16) * scale, sprite.getPosition().y);
-        if(sprite.getPosition().y + 16 * scale < 0)
+            sprite.setPosition((-16) * sprite_scale, sprite.getPosition().y);
+        if(sprite.getPosition().y + 16 * sprite_scale < 0)
             sprite.setPosition(sprite.getPosition().x, window_height);
         if(sprite.getPosition().y > window_height)
-            sprite.setPosition(sprite.getPosition().x, (-16) * scale);
+            sprite.setPosition(sprite.getPosition().x, (-16) * sprite_scale);
 
         sprite.setTextureRect(sf::IntRect(hor_offset * 17 + 1, ver_offset * 17 + 1, 16, 16));
 
         window.clear();
+        window.draw(background);
         window.draw(sprite);
         window.display();
     }
