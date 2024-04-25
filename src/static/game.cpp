@@ -30,7 +30,7 @@ void Game::gameLoop() {
     if(!player_texture.loadFromFile("assets/Player.png"))
         throw CustomException("[!] #gameLoop()# -> Player image not found!");
 
-    Player player(sprite_size * sprite_scale, 4 * sprite_size * sprite_scale, 5.0f, player_texture);
+    Player player(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(0.0f, 0.0f), 5.0f, player_texture);
     player.setScale(sprite_scale, sprite_scale);
     player.setTextureRect(sf::IntRect(0, 0, sprite_size, sprite_size));
     

@@ -1,18 +1,7 @@
 #include "player.h"
 #include "../exception/custom_exception.h"
 
-Player::Player(int x_pos, int y_pos, float velocity, sf::Texture& texture) : 
-    MovingEntity(x_pos, y_pos, velocity, texture), score(0) {}
-
-void Player::move() {
-    sf:Sprite::move(x_speed, y_speed);
-}
-
-void Player::setDirection(int x_dir, int y_dir) {
-    this->x_speed = velocity * x_dir;
-    this->y_speed = velocity * y_dir;
-}
-
-void Player::setTextureOffset(int x_off, int y_off, int size) {
-    setTextureRect(sf::IntRect(x_off * size, y_off * size, size, size));
-}
+Player::Player(const sf::Vector2f& position, const sf::Vector2f& grid_position, float velocity, sf::Texture& texture) : 
+    MovingEntity(position, grid_position, velocity, texture), score(0) {
+        this->speed.x = velocity;
+    }

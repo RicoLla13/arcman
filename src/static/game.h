@@ -15,8 +15,9 @@ class Game {
         int window_height = 18 * sprite_size * sprite_scale;
     
         std::string background_image = "assets/Level_1.png";
-
         std::string window_title = "ARCMAN";
+
+        std::vector<std::vector<Entity*>> grid;
 
         Game();
         ~Game();

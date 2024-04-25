@@ -1,6 +1,10 @@
 #include "entity.h"
 
-Entity::Entity(int x_pos, int y_pos, sf::Texture& texture) :
-    sf::Sprite(texture) {
-        this->setPosition(x_pos, y_pos);
+Entity::Entity(const sf::Vector2f& position, const sf::Vector2f& grid_position, sf::Texture& texture) :
+    sf::Sprite(texture), grid_position(grid_position) {
+        this->setPosition(position);
     }
+
+void Entity::setTextureOffset(int x_off, int y_off, int size) {
+    setTextureRect(sf::IntRect(x_off * size, y_off * size, size, size));
+}

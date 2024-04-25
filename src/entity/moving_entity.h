@@ -6,11 +6,12 @@
 class MovingEntity : public Entity {
     protected:
         float velocity;
-        int x_speed;
-        int y_speed;
+        sf::Vector2f speed;
 
     public:
-        MovingEntity(int x_pos, int y_pos, float velocity, sf::Texture& texture);
+        MovingEntity(const sf::Vector2f& position, const sf::Vector2f& grid_position, float velocity, sf::Texture& texture);
+        void setDirection(int x_dir, int y_dir);
+        void move();
         virtual ~MovingEntity() {}
 };
 
