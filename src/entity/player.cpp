@@ -12,3 +12,7 @@ void Player::setDirection(int x_dir, int y_dir) {
     this->x_speed = velocity * x_dir;
     this->y_speed = velocity * y_dir;
 }
+
+void Player::setTextureOffset(int x_off, int y_off, int size) {
+    setTextureRect(sf::IntRect(x_off * size, y_off * size, size, size));
+}

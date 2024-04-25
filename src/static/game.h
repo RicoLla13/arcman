@@ -23,7 +23,7 @@ class Game {
 
     public:
         sf::RenderWindow window;
-
+        sf::Clock clock;
         static Game& getInstance();
 
         Game(Game const&) = delete;
