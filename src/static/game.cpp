@@ -21,12 +21,14 @@ Game& Game::getInstance() {
 }
 
 void Game::gameLoop() {
+    /*
     sf::Texture background_texture;
     if(!background_texture.loadFromFile(background_image))
         throw CustomException("[!] #gameLoop()# -> Background image not found!");
 
     sf::Sprite background(background_texture);
     background.setScale(sprite_scale, sprite_scale);
+    */
 
     sf::Texture tile_texture;
     if(!tile_texture.loadFromFile("assets/Debug_Tile.png"))
@@ -38,7 +40,7 @@ void Game::gameLoop() {
 
         row.reserve(18);
         for(int j = 0; j < 18; j++) {
-            if(j < 3 || j > 15)
+            if((j < 3 || j > 15) || (i < 1 || i > 13))
                 row.push_back(new Tile(sf::Vector2f(i, j), tile_texture, sprite_size * sprite_scale, true));
             else
                 row.push_back(new Tile(sf::Vector2f(i, j), sf::Texture(), sprite_size * sprite_scale, false));
@@ -132,13 +134,23 @@ void Game::gameLoop() {
                 player_texture_offset.dir = 1;
                 break;
             case 2:
-                p_x_dir = -1;
-                p_y_dir = 0;
+                if(grid[player_grid_pos.x - 1][player_grid_pos.y]->isTileSolid()) {
+                    p_x_dir = 0;
+                    p_y_dir = 0;
+                } else {
+                    p_x_dir = -1;
+                    p_y_dir = 0;
+                }
                 player_texture_offset.dir = 2;
                 break;
             case 3:
-                p_x_dir = 1;
-                p_y_dir = 0;
+                if(grid[player_grid_pos.x + 1][player_grid_pos.y]->isTileSolid()) {
+                    p_x_dir = 0;
+                    p_y_dir = 0;
+                } else {
+                    p_x_dir = 1;
+                    p_y_dir = 0;
+                }
                 player_texture_offset.dir = 0;
                 break;
             default:
@@ -160,7 +172,7 @@ void Game::gameLoop() {
         player.move();
 
         window.clear();
-        window.draw(background);
+        // window.draw(background);
 
         for(auto& row : grid) {
             for(auto& tile : row)
