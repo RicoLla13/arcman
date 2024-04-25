@@ -8,7 +8,8 @@ class Tile : public Entity {
         bool isSolid;
             
     public:
-        Tile(const sf::Vector2f& position, const sf::Vector2f& grid_position, sf::Texture& texture, bool isSolid);
+        Tile(const sf::Vector2f& grid_position, const sf::Texture& texture, int size, bool isSolid);
+        bool isTileSolid() const { return isSolid; }
         ~Tile() {}
 };
 

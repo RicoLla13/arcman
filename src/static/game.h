@@ -1,6 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "../entity/entity.h"
+#include "../entity/tile.h"
+
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <string>
@@ -17,7 +20,7 @@ class Game {
         std::string background_image = "assets/Level_1.png";
         std::string window_title = "ARCMAN";
 
-        std::vector<std::vector<Entity*>> grid;
+        std::vector<std::vector<Tile*>> grid;
 
         Game();
         ~Game();

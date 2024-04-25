@@ -7,7 +7,7 @@ class Player : public MovingEntity {
     private:
         int score;
     public:
-        Player(const sf::Vector2f& position, const sf::Vector2f& grid_position, float velocity, sf::Texture& texture);
+        Player(const sf::Vector2f& grid_position, float velocity, const sf::Texture& texture, int size);
         ~Player() {}
         void increaseScore(int value);
         int getScore() const { return score; }
