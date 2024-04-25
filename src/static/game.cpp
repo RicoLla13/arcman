@@ -41,8 +41,6 @@ void Game::gameLoop() {
         int anim = 0;
         int dir = 0;
     } player_texture_offset;
-    int lastPlayerPosX = 0;
-    int lastPlayerPosY = 0;
     int selected_dir = 3;
 
     while (window.isOpen()) {
@@ -70,35 +68,34 @@ void Game::gameLoop() {
             selected_dir = 3;
 
         sf::Vector2f player_pos = player.getPosition();
-        int player_pos_x = static_cast<int>(player_pos.x);
-        int player_pos_y = static_cast<int>(player_pos.y);
 
-        if(player_pos_x + sprite_size * sprite_scale < 0)
-            player.setPosition(window_width, player_pos_y);
-        else if(player_pos_x > window_width)
-            player.setPosition(-sprite_size * sprite_scale, player_pos_y);
-        else if(player_pos_y + sprite_size * sprite_scale < 0)
-            player.setPosition(player_pos_x, window_height);
-        else if(player_pos_y > window_height)
-            player.setPosition(player_pos_x, -sprite_size * sprite_scale);
+        if(player_pos.x + sprite_size * sprite_scale < 0)
+            player.setPosition(window_width, player_pos.y);
+        else if(player_pos.x > window_width)
+            player.setPosition(-sprite_size * sprite_scale, player_pos.y);
+        else if(player_pos.y + sprite_size * sprite_scale < 0)
+            player.setPosition(player_pos.x, window_height);
+        else if(player_pos.y > window_height)
+            player.setPosition(player_pos.x, -sprite_size * sprite_scale);
 
-        bool positionChangedX = player_pos_x % sprite_size == 0 && player_pos_x != lastPlayerPosX;
-        bool positionChangedY = player_pos_y % sprite_size == 0 && player_pos_y != lastPlayerPosY;
-
-        if (positionChangedX || positionChangedY) {
-            if (positionChangedX && (selected_dir == 0 || selected_dir == 1)) {
-                // Change Y direction only if moving vertically
-                player.setDirection(0, selected_dir == 0 ? -1 : 1);
-                player_texture_offset.dir = selected_dir == 0 ? 3 : 1;
-            } else if (positionChangedY && (selected_dir == 2 || selected_dir == 3)) {
-                // Change X direction only if moving horizontally
-                player.setDirection(selected_dir == 2 ? -1 : 1, 0);
-                player_texture_offset.dir = selected_dir == 2 ? 2 : 0;
-            }
+        switch(selected_dir) {
+            case 0:
+                player.setDirection(0, -1);
+                player_texture_offset.dir = 3;
+                break;
+            case 1:
+                player.setDirection(0, 1);
+                player_texture_offset.dir = 1;
+                break;
+            case 2:
+                player.setDirection(-1, 0);
+                player_texture_offset.dir = 2;
+                break;
+            case 3:
+                player.setDirection(1, 0);
+                player_texture_offset.dir = 0;
+                break;
         }
-
-        lastPlayerPosX = player_pos_x;
-        lastPlayerPosY = player_pos_y;
 
         player.setTextureOffset(player_texture_offset.anim, player_texture_offset.dir, sprite_size);
 
