@@ -1,8 +1,4 @@
 #include "game.h"
-#include "../entity/entity.h"
-#include "../entity/tile.h"
-#include "../entity/player.h"
-#include "../exception/custom_exception.h"
 
 #include <iostream>
 
@@ -18,6 +14,24 @@ Game::~Game() {
 Game& Game::getInstance() {
     static Game instance;
     return instance;
+}
+
+bool Game::checkPlayerCollision(Player& player, int p_x_dir, int p_y_dir) {
+    sf::Vector2f position = player.getPosition();
+    sf::Vector2f speed = player.getSpeed();
+
+    std::array<Tile*, 4> collision{};
+    collision[0] = grid[floor(position.x / static_cast<float>(rect_size))][floor(position.y / static_cast<float>(rect_size))];
+    collision[1] = grid[ceil(position.x / static_cast<float>(rect_size))][ceil(position.y / static_cast<float>(rect_size))];
+    collision[2] = grid[ceil(position.x / static_cast<float>(rect_size))][floor(position.y / static_cast<float>(rect_size))];
+    collision[3] = grid[floor(position.x / static_cast<float>(rect_size))][ceil(position.y / static_cast<float>(rect_size))];
+    
+    for(auto& col : collision) {
+        if(col->isTileSolid())
+            return true;
+    }
+
+    return false;
 }
 
 void Game::gameLoop() {
@@ -41,9 +55,9 @@ void Game::gameLoop() {
         row.reserve(18);
         for(int j = 0; j < 18; j++) {
             if((j < 3 || j > 15) || (i < 1 || i > 13))
-                row.push_back(new Tile(sf::Vector2f(i, j), tile_texture, sprite_size * sprite_scale, true));
+                row.push_back(new Tile(sf::Vector2f(i * rect_size, j * rect_size), tile_texture, sprite_size * sprite_scale, true));
             else
-                row.push_back(new Tile(sf::Vector2f(i, j), sf::Texture(), sprite_size * sprite_scale, false));
+                row.push_back(new Tile(sf::Vector2f(i * rect_size, j * rect_size), sf::Texture(), sprite_size * sprite_scale, false));
         }
 
         grid.push_back(std::move(row));
@@ -59,7 +73,7 @@ void Game::gameLoop() {
     if(!player_texture.loadFromFile("assets/Player.png"))
         throw CustomException("[!] #gameLoop()# -> Player image not found!");
 
-    Player player(sf::Vector2f(1.0f, 3.0f), 5.0f, player_texture, sprite_size * sprite_scale);
+    Player player(sf::Vector2f(1.0f * rect_size, 3.0f * rect_size), 5.0f, player_texture, rect_size);
     player.setScale(sprite_scale, sprite_scale);
     player.setTextureRect(sf::IntRect(0, 0, sprite_size, sprite_size));
     
@@ -98,59 +112,37 @@ void Game::gameLoop() {
 
         sf::Vector2f player_pos = player.getPosition();
 
-        if(player_pos.x + sprite_size * sprite_scale < 0)
+        if(player_pos.x + rect_size < 0)
             player.setPosition(window_width, player_pos.y);
         else if(player_pos.x > window_width)
-            player.setPosition(-sprite_size * sprite_scale, player_pos.y);
-        else if(player_pos.y + sprite_size * sprite_scale < 0)
+            player.setPosition(-rect_size, player_pos.y);
+        else if(player_pos.y + rect_size < 0)
             player.setPosition(player_pos.x, window_height);
         else if(player_pos.y > window_height)
-            player.setPosition(player_pos.x, -sprite_size * sprite_scale);
+            player.setPosition(player_pos.x, -rect_size);
 
         int p_x_dir;
         int p_y_dir;
 
-        sf::Vector2f player_grid_pos = player.getGridPosition();
-
         switch(selected_dir) {
             case 0:
-                if(grid[player_grid_pos.x][player_grid_pos.y - 1]->isTileSolid()) {
-                    p_x_dir = 0;
-                    p_y_dir = 0;
-                } else {
-                    p_x_dir = 0;
-                    p_y_dir = -1;
-                }
+                p_x_dir = 0;
+                p_y_dir = -1;
                 player_texture_offset.dir = 3;
                 break;
             case 1:
-                if(grid[player_grid_pos.x][player_grid_pos.y + 1]->isTileSolid()) {
-                    p_x_dir = 0;
-                    p_y_dir = 0;
-                } else {
-                    p_x_dir = 0;
-                    p_y_dir = 1;
-                }
+                p_x_dir = 0;
+                p_y_dir = 1;
                 player_texture_offset.dir = 1;
                 break;
             case 2:
-                if(grid[player_grid_pos.x - 1][player_grid_pos.y]->isTileSolid()) {
-                    p_x_dir = 0;
-                    p_y_dir = 0;
-                } else {
-                    p_x_dir = -1;
-                    p_y_dir = 0;
-                }
+                p_x_dir = -1;
+                p_y_dir = 0;
                 player_texture_offset.dir = 2;
                 break;
             case 3:
-                if(grid[player_grid_pos.x + 1][player_grid_pos.y]->isTileSolid()) {
-                    p_x_dir = 0;
-                    p_y_dir = 0;
-                } else {
-                    p_x_dir = 1;
-                    p_y_dir = 0;
-                }
+                p_x_dir = 1;
+                p_y_dir = 0;
                 player_texture_offset.dir = 0;
                 break;
             default:
@@ -159,15 +151,16 @@ void Game::gameLoop() {
                 break;
         }
 
+        if(checkPlayerCollision(player, p_x_dir, p_y_dir)) {
+            p_x_dir = 0;
+            p_y_dir = 0;
+        }
         player.setDirection(p_x_dir, p_y_dir);
 
         player.setTextureOffset(player_texture_offset.anim, player_texture_offset.dir, sprite_size);
 
         // debug -> freeze player
         // player.setDirection(0, 0);
-
-        // debug -> print player grid position
-        std::cout << "Player Grid Position: " << player.getGridPosition().x << ", " << player.getGridPosition().y << std::endl;
 
         player.move();
 
