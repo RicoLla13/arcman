@@ -7,8 +7,8 @@ bool MovingEntity::isColidingWith(Tile* tile) {
     return getGlobalBounds().intersects(tile->getGlobalBounds());
 }
 
-void MovingEntity::move() {
-    sf:Sprite::move(speed);
+void MovingEntity::move(float delta_time) {
+    sf:Sprite::move(speed.x, speed.y);
 }
 
 void MovingEntity::setDirection(int x_dir, int y_dir) {

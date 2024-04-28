@@ -16,7 +16,7 @@ Game& Game::getInstance() {
     return instance;
 }
 
-bool Game::checkPlayerCollision(Player& player, int p_x_dir, int p_y_dir) {
+void Game::checkPlayerCollision(Player& player, int& p_x_dir, int& p_y_dir) {
     sf::Vector2f position = player.getPosition();
     sf::Vector2f speed = player.getSpeed();
 
@@ -26,12 +26,25 @@ bool Game::checkPlayerCollision(Player& player, int p_x_dir, int p_y_dir) {
     collision[2] = grid[ceil(position.x / static_cast<float>(rect_size))][floor(position.y / static_cast<float>(rect_size))];
     collision[3] = grid[floor(position.x / static_cast<float>(rect_size))][ceil(position.y / static_cast<float>(rect_size))];
     
-    for(auto& col : collision) {
-        if(col->isTileSolid())
-            return true;
+    if(p_x_dir < 0) {
+        if(collision[0]->isSolid() || collision[3]->isSolid()) {
+            p_x_dir = 0;
+        }
+    } else if(p_x_dir > 0) {
+        if(collision[1]->isSolid() || collision[2]->isSolid()) {
+            p_x_dir = 0;
+        }
     }
 
-    return false;
+    if(p_y_dir < 0) {
+        if(collision[0]->isSolid() || collision[2]->isSolid()) {
+            p_y_dir = 0;
+        }
+    } else if(p_y_dir > 0) {
+        if(collision[1]->isSolid() || collision[3]->isSolid()) {
+            p_y_dir = 0;
+        }
+    }
 }
 
 void Game::gameLoop() {
@@ -151,10 +164,7 @@ void Game::gameLoop() {
                 break;
         }
 
-        if(checkPlayerCollision(player, p_x_dir, p_y_dir)) {
-            p_x_dir = 0;
-            p_y_dir = 0;
-        }
+        checkPlayerCollision(player, p_x_dir, p_y_dir);
         player.setDirection(p_x_dir, p_y_dir);
 
         player.setTextureOffset(player_texture_offset.anim, player_texture_offset.dir, sprite_size);
@@ -162,7 +172,8 @@ void Game::gameLoop() {
         // debug -> freeze player
         // player.setDirection(0, 0);
 
-        player.move();
+        player.move(delta_time);
+        //std::cout << delta_time << std::endl;
 
         window.clear();
         // window.draw(background);

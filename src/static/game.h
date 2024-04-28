@@ -37,7 +37,7 @@ class Game {
 
         Game(Game const&) = delete;
         void operator=(Game const&) = delete;
-        bool checkPlayerCollision(Player& player, int p_x_dir, int p_y_dir);
+        void checkPlayerCollision(Player& player, int& p_x_dir, int& p_y_dir);
 
         void gameLoop();
 };
