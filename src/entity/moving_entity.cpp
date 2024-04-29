@@ -1,11 +1,7 @@
 #include "moving_entity.h"
 
-MovingEntity::MovingEntity(const sf::Vector2f& grid_position, float velocity, const sf::Texture& texture, int size) : 
-    Entity(grid_position, texture, size), velocity(velocity), speed(0, 0) {}
-
-bool MovingEntity::isColidingWith(Tile* tile) {
-    return getGlobalBounds().intersects(tile->getGlobalBounds());
-}
+MovingEntity::MovingEntity(const sf::Vector2f& grid_position, float velocity, const sf::Texture& texture) : 
+    Entity(grid_position, texture), velocity(velocity), speed(0, 0) {}
 
 void MovingEntity::move(float delta_time) {
     sf:Sprite::move(speed.x, speed.y);

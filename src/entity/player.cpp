@@ -1,8 +1,8 @@
 #include "player.h"
 #include "../exception/custom_exception.h"
 
-Player::Player(const sf::Vector2f& grid_position, float velocity, const sf::Texture& texture, int size) : 
-    MovingEntity(grid_position, velocity, texture, size), score(0) {
+Player::Player(const sf::Vector2f& grid_position, float velocity, const sf::Texture& texture) : 
+    MovingEntity(grid_position, velocity, texture), score(0) {
         this->speed.x = velocity;
     }
 
@@ -12,7 +12,6 @@ void Player::update(float delta_time) {
         anim_offset = !anim_offset;
         elapsed_time = 0.0f;
     }
-
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
         speed.x = 0;
@@ -35,6 +34,6 @@ void Player::update(float delta_time) {
         dir_offset = 0;
     }
 
-    this->setTextureOffset(anim_offset, dir_offset, sprite_size);
+    this->setTextureOffset(anim_offset, dir_offset);
     this->move(delta_time);
 }

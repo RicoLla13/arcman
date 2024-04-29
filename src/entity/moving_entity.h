@@ -10,8 +10,7 @@ class MovingEntity : public Entity {
         sf::Vector2f speed;
 
     public:
-        MovingEntity(const sf::Vector2f& grid_position, float velocity, const sf::Texture& texture, int size);
-        bool isColidingWith(Tile* tile);
+        MovingEntity(const sf::Vector2f& grid_position, float velocity, const sf::Texture& texture);
         void setDirection(int x_dir, int y_dir);
         void move(float delta_time);
         sf::Vector2f getSpeed() const { return speed; }

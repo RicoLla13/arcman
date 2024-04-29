@@ -29,9 +29,9 @@ void Game::gameLoop() {
         row.reserve(18);
         for(int j = 0; j < 18; j++) {
             if((j < 3 || j > 15) || (i < 1 || i > 13))
-                row.push_back(new Tile(sf::Vector2f(i * rect_size, j * rect_size), tile_texture, sprite_size * sprite_scale, true));
+                row.push_back(new Tile(sf::Vector2f(i * rect_size, j * rect_size), tile_texture, true));
             else
-                row.push_back(new Tile(sf::Vector2f(i * rect_size, j * rect_size), sf::Texture(), sprite_size * sprite_scale, false));
+                row.push_back(new Tile(sf::Vector2f(i * rect_size, j * rect_size), sf::Texture(), false));
         }
 
         grid.push_back(std::move(row));
@@ -47,7 +47,7 @@ void Game::gameLoop() {
     if(!player_texture.loadFromFile("assets/Player.png"))
         throw CustomException("[!] #gameLoop()# -> Player image not found!");
 
-    Player player(sf::Vector2f(1.0f * rect_size, 3.0f * rect_size), 5.0f, player_texture, rect_size);
+    Player player(sf::Vector2f(1.0f * rect_size, 3.0f * rect_size), 5.0f, player_texture);
     player.setScale(sprite_scale, sprite_scale);
     player.setTextureRect(sf::IntRect(0, 0, sprite_size, sprite_size));
     
