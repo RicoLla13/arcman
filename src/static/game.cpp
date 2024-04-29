@@ -2,13 +2,13 @@
 
 #include <iostream>
 
-Game::Game() { 
-    window.create(sf::VideoMode(window_width, window_height), window_title);
-    window.setFramerateLimit(frame_rate);
+Game::Game() {
+    this->create(sf::VideoMode(window_width, window_height), window_title);
+    this->setFramerateLimit(frame_rate);
 }
 
 Game::~Game() {
-    window.close();
+    this->close();
 }
 
 Game& Game::getInstance() {
@@ -16,47 +16,8 @@ Game& Game::getInstance() {
     return instance;
 }
 
-void Game::checkPlayerCollision(Player& player, int& p_x_dir, int& p_y_dir) {
-    sf::Vector2f position = player.getPosition();
-    sf::Vector2f speed = player.getSpeed();
-
-    std::array<Tile*, 4> collision{};
-    collision[0] = grid[floor(position.x / static_cast<float>(rect_size))][floor(position.y / static_cast<float>(rect_size))];
-    collision[1] = grid[ceil(position.x / static_cast<float>(rect_size))][ceil(position.y / static_cast<float>(rect_size))];
-    collision[2] = grid[ceil(position.x / static_cast<float>(rect_size))][floor(position.y / static_cast<float>(rect_size))];
-    collision[3] = grid[floor(position.x / static_cast<float>(rect_size))][ceil(position.y / static_cast<float>(rect_size))];
-    
-    if(p_x_dir < 0) {
-        if(collision[0]->isSolid() || collision[3]->isSolid()) {
-            p_x_dir = 0;
-        }
-    } else if(p_x_dir > 0) {
-        if(collision[1]->isSolid() || collision[2]->isSolid()) {
-            p_x_dir = 0;
-        }
-    }
-
-    if(p_y_dir < 0) {
-        if(collision[0]->isSolid() || collision[2]->isSolid()) {
-            p_y_dir = 0;
-        }
-    } else if(p_y_dir > 0) {
-        if(collision[1]->isSolid() || collision[3]->isSolid()) {
-            p_y_dir = 0;
-        }
-    }
-}
-
 void Game::gameLoop() {
-    /*
-    sf::Texture background_texture;
-    if(!background_texture.loadFromFile(background_image))
-        throw CustomException("[!] #gameLoop()# -> Background image not found!");
-
-    sf::Sprite background(background_texture);
-    background.setScale(sprite_scale, sprite_scale);
-    */
-
+    // Debug Tile texture
     sf::Texture tile_texture;
     if(!tile_texture.loadFromFile("assets/Debug_Tile.png"))
         throw CustomException("[!] #Game()# -> Tile image not found!");
@@ -91,100 +52,27 @@ void Game::gameLoop() {
     player.setTextureRect(sf::IntRect(0, 0, sprite_size, sprite_size));
     
     float delta_time = 0.0f;
-    float elapsed_time = 0.0f;
-    const float pl_anim_interval = 0.1f;
-    struct {
-        int anim = 0;
-        int dir = 0;
-    } player_texture_offset;
-    int selected_dir = 3;
 
-    while (window.isOpen()) {
+    while (this->isOpen()) {
         sf::Event event;
-        while (window.pollEvent(event)) {
+        while (this->pollEvent(event)) {
             if (event.type == sf::Event::Closed)
-                window.close();
+                this->close();
         }
 
         delta_time = clock.restart().asSeconds();
-        elapsed_time += delta_time;
 
-        if(elapsed_time >= pl_anim_interval) {
-            player_texture_offset.anim = !player_texture_offset.anim;
-            elapsed_time = 0.0f;
-        }
+        player.update(delta_time);
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
-            selected_dir = 0;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) 
-            selected_dir = 1;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-            selected_dir = 2;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-            selected_dir = 3;
-
-        sf::Vector2f player_pos = player.getPosition();
-
-        if(player_pos.x + rect_size < 0)
-            player.setPosition(window_width, player_pos.y);
-        else if(player_pos.x > window_width)
-            player.setPosition(-rect_size, player_pos.y);
-        else if(player_pos.y + rect_size < 0)
-            player.setPosition(player_pos.x, window_height);
-        else if(player_pos.y > window_height)
-            player.setPosition(player_pos.x, -rect_size);
-
-        int p_x_dir;
-        int p_y_dir;
-
-        switch(selected_dir) {
-            case 0:
-                p_x_dir = 0;
-                p_y_dir = -1;
-                player_texture_offset.dir = 3;
-                break;
-            case 1:
-                p_x_dir = 0;
-                p_y_dir = 1;
-                player_texture_offset.dir = 1;
-                break;
-            case 2:
-                p_x_dir = -1;
-                p_y_dir = 0;
-                player_texture_offset.dir = 2;
-                break;
-            case 3:
-                p_x_dir = 1;
-                p_y_dir = 0;
-                player_texture_offset.dir = 0;
-                break;
-            default:
-                p_x_dir = 0;
-                p_y_dir = 0;
-                break;
-        }
-
-        checkPlayerCollision(player, p_x_dir, p_y_dir);
-        player.setDirection(p_x_dir, p_y_dir);
-
-        player.setTextureOffset(player_texture_offset.anim, player_texture_offset.dir, sprite_size);
-
-        // debug -> freeze player
-        // player.setDirection(0, 0);
-
-        player.move(delta_time);
-        //std::cout << delta_time << std::endl;
-
-        window.clear();
-        // window.draw(background);
+        this->clear();
 
         for(auto& row : grid) {
             for(auto& tile : row)
-            window.draw(*tile);
+            this->draw(*tile);
         }
 
-        window.draw(player);
-        window.display();
+        this->draw(player);
+        this->display();
     }
     
     // free memory
