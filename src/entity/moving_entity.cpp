@@ -4,7 +4,7 @@ MovingEntity::MovingEntity(const sf::Vector2f& grid_position, float velocity, co
     Entity(grid_position, texture), velocity(velocity), speed(0, 0) {}
 
 void MovingEntity::move(float delta_time) {
-    sf:Sprite::move(speed.x, speed.y);
+    sf::Sprite::move(speed * delta_time);
 }
 
 void MovingEntity::setDirection(int x_dir, int y_dir) {
