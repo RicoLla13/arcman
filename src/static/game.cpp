@@ -47,7 +47,7 @@ void Game::convertMap(std::array<std::string, tile_grid_height> map) {
 }
 
 void Game::gameLoop() {
-    Player player(sf::Vector2f(1.0f * rect_size, 3.0f * rect_size), 300.0f, player_texture);
+    Player player(sf::Vector2f(1.0f * rect_size, 1.0f * rect_size), 300.0f, player_texture);
     player.setScale(sprite_scale, sprite_scale);
     player.setTextureRect(sf::IntRect(0, 0, sprite_size, sprite_size));
     
@@ -62,7 +62,7 @@ void Game::gameLoop() {
 
         delta_time = clock.restart().asSeconds();
 
-        player.update(delta_time);
+        player.update(delta_time, grid);
 
         this->clear();
 

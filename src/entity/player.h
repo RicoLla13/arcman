@@ -2,6 +2,7 @@
 #define PLAYER_CLASS
 
 #include "moving_entity.h"
+#include <array>
 
 class Player : public MovingEntity {
     private:
@@ -14,7 +15,7 @@ class Player : public MovingEntity {
         Player(const sf::Vector2f& grid_position, float velocity, const sf::Texture& texture);
         ~Player() {}
         void increaseScore(int value);
-        void update(float delta_time);
+        void update(float delta_time, std::vector<std::vector<Tile*>> grid);
         int getScore() const { return score; }
 };
 
