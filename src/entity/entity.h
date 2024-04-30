@@ -8,6 +8,7 @@
 
 class Entity : public sf::Sprite {
     public:
+        Entity(const sf::Vector2f& grid_position);
         Entity(const sf::Vector2f& grid_position, const sf::Texture& texture);
         void setTextureOffset(int x_off, int y_off);
         virtual ~Entity() {}

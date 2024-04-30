@@ -1,5 +1,9 @@
 #include "entity.h"
 
+Entity::Entity(const sf::Vector2f& grid_position) {
+    this->setPosition(grid_position);
+}
+
 Entity::Entity(const sf::Vector2f& grid_position, const sf::Texture& texture) :
     sf::Sprite(texture) {
         this->setPosition(grid_position);

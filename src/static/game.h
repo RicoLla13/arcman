@@ -17,7 +17,10 @@ class Game : public sf::RenderWindow {
     private:
         std::string window_title = "ARCMAN";
         sf::Clock clock;
-        std::array<std::array<Tile*, tile_grid_width>, tile_grid_height> grid;
+        std::vector<std::vector<Tile*>> grid;
+
+        sf::Texture tile_texture;
+        sf::Texture player_texture;
 
         Game();
         ~Game();
@@ -30,6 +33,7 @@ class Game : public sf::RenderWindow {
 
         void gameLoop();
         void convertMap(std::array<std::string, tile_grid_height> map);
+        void loadTextures();
 };
 
 #endif

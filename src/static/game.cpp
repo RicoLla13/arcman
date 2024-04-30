@@ -16,37 +16,37 @@ Game& Game::getInstance() {
     return instance;
 }
 
-void Game::convertMap(std::array<std::string, tile_grid_height> map) {
-    sf::Texture tile_texture;
+void Game::loadTextures() {
     if(!tile_texture.loadFromFile("assets/Debug_Tile.png"))
-        throw CustomException("[!] #Game()# -> Tile image not found!");
+        throw CustomException("[!] #loadTextures()# -> Tile image not found!");
+    if(!player_texture.loadFromFile("assets/Player.png"))
+        throw CustomException("[!] #loadTextures()# -> Player image not found!");
+}
 
-    for (int i = 0; i < tile_grid_height; ++i) {
-        // Loop through each character in the string
-        for (int j = 0; j < tile_grid_width; ++j) {
-            grid[j][i] = new Tile(sf::Vector2f(j * rect_size, i * rect_size), tile_texture);
+void Game::convertMap(std::array<std::string, tile_grid_height> map) {
+    for(int i = 0; i < tile_grid_height; i++) {
+        std::vector<Tile*> row;
 
-            if(map[i][j] == '#')
-                grid[j][i]->setSolid(true);
-            else if(map[i][j] == ' ') {
-                grid[j][i]->setSolid(false);
-                grid[j][i]->setTexture(sf::Texture());
+        for(int j = 0; j < tile_grid_width; j++) {
+            Tile* tile = new Tile(sf::Vector2f(j * rect_size, i * rect_size));
+
+            if(map[i][j] == '#') {
+                tile->setTexture(tile_texture);
+                tile->setSolid(true);
             }
+            else
+                tile->setSolid(false);
 
-            grid[j][i]->setScale(sprite_scale, sprite_scale);
-
-            std::cout << map[i][j];
+            tile->setScale(sprite_scale, sprite_scale);
+            tile->setTextureRect(sf::IntRect(0, 0, sprite_size, sprite_size));
+            row.push_back(tile);
         }
-        std::cout << std::endl;
+
+        grid.push_back(row);
     }
 }
 
 void Game::gameLoop() {
-
-    sf::Texture player_texture;
-    if(!player_texture.loadFromFile("assets/Player.png"))
-        throw CustomException("[!] #gameLoop()# -> Player image not found!");
-
     Player player(sf::Vector2f(1.0f * rect_size, 3.0f * rect_size), 300.0f, player_texture);
     player.setScale(sprite_scale, sprite_scale);
     player.setTextureRect(sf::IntRect(0, 0, sprite_size, sprite_size));
@@ -66,7 +66,10 @@ void Game::gameLoop() {
 
         this->clear();
 
-
+        for(auto& row : grid) {
+            for(auto& tile : row)
+            this->draw(*tile);
+        }
 
         this->draw(player);
         this->display();

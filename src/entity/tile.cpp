@@ -5,3 +5,6 @@ Tile::Tile(const sf::Vector2f& grid_position, const sf::Texture& texture, bool i
 
 Tile::Tile(const sf::Vector2f& grid_position, const sf::Texture& texture) : 
     Entity(grid_position, texture), solid(false) {}
+
+Tile::Tile(const sf::Vector2f& grid_position) : 
+    Entity(grid_position), solid(false) {}

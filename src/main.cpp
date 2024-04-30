@@ -5,9 +5,9 @@ int main() {
 
     std::array<std::string, tile_grid_height> map = {
         "###############",
-        "#             #",
-        "#             #",
-        "#             #",
+        "###############",
+        "###############",
+        "# #### # #### #",
         "#             #",
         "#             #",
         "#             #",
@@ -24,8 +24,8 @@ int main() {
         "###############"
     };
 
+    game.loadTextures();
     game.convertMap(map);
-
     game.gameLoop();
 
     return 0;
