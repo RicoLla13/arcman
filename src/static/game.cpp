@@ -16,32 +16,32 @@ Game& Game::getInstance() {
     return instance;
 }
 
-void Game::gameLoop() {
-    // Debug Tile texture
+void Game::convertMap(std::array<std::string, tile_grid_height> map) {
     sf::Texture tile_texture;
     if(!tile_texture.loadFromFile("assets/Debug_Tile.png"))
         throw CustomException("[!] #Game()# -> Tile image not found!");
 
-    grid.reserve(15);
-    for(int i = 0; i< 15; i++) {
-        std::vector<Tile*> row;
+    for (int i = 0; i < tile_grid_height; ++i) {
+        // Loop through each character in the string
+        for (int j = 0; j < tile_grid_width; ++j) {
+            grid[j][i] = new Tile(sf::Vector2f(j * rect_size, i * rect_size), tile_texture);
 
-        row.reserve(18);
-        for(int j = 0; j < 18; j++) {
-            if((j < 3 || j > 15) || (i < 1 || i > 13))
-                row.push_back(new Tile(sf::Vector2f(i * rect_size, j * rect_size), tile_texture, true));
-            else
-                row.push_back(new Tile(sf::Vector2f(i * rect_size, j * rect_size), sf::Texture(), false));
+            if(map[i][j] == '#')
+                grid[j][i]->setSolid(true);
+            else if(map[i][j] == ' ') {
+                grid[j][i]->setSolid(false);
+                grid[j][i]->setTexture(sf::Texture());
+            }
+
+            grid[j][i]->setScale(sprite_scale, sprite_scale);
+
+            std::cout << map[i][j];
         }
-
-        grid.push_back(std::move(row));
+        std::cout << std::endl;
     }
+}
 
-    for(auto& row : grid) {
-        for(auto& tile : row) {
-            tile->setScale(sprite_scale, sprite_scale);
-        }
-    }
+void Game::gameLoop() {
 
     sf::Texture player_texture;
     if(!player_texture.loadFromFile("assets/Player.png"))
@@ -66,10 +66,7 @@ void Game::gameLoop() {
 
         this->clear();
 
-        for(auto& row : grid) {
-            for(auto& tile : row)
-            this->draw(*tile);
-        }
+
 
         this->draw(player);
         this->display();
@@ -79,8 +76,5 @@ void Game::gameLoop() {
     for(auto& row : grid) {
         for(auto& tile : row)
             delete tile;
-
-        row.clear();
     }
-    grid.clear();
 }
