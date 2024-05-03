@@ -5,7 +5,7 @@
 
 #include "../entity/entity.h"
 #include "../entity/tile.h"
-#include "../entity/player.h"
+#include "../entity/moving_entity.h"
 #include "../exception/custom_exception.h"
 
 #include <SFML/Graphics.hpp>

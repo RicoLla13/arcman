@@ -14,4 +14,12 @@ constexpr int tile_grid_height = 18;
 constexpr int window_width = tile_grid_width * sprite_size * sprite_scale;
 constexpr int window_height = tile_grid_height * sprite_size * sprite_scale;
 
+enum class Direction {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    NONE
+};
+
 #endif
