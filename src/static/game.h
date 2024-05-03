@@ -12,12 +12,14 @@
 #include <string>
 #include <array>
 #include <math.h>
+#include <queue>
 
 class Game : public sf::RenderWindow {
     private:
         std::string window_title = "ARCMAN";
         sf::Clock clock;
         std::vector<std::vector<Tile*>> grid;
+        std::queue<Direction> direction_queue;
 
         sf::Texture tile_texture;
         sf::Texture player_texture;

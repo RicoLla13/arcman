@@ -103,30 +103,47 @@ void Game::gameLoop() {
         }
 
         // manage player direction, and sprite direction
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-            player.setDirection(Direction::UP);
-            player_anim_dir = 0;
-        }
-        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-            player.setDirection(Direction::DOWN);
-            player_anim_dir = 1;
-        }
-        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            player.setDirection(Direction::LEFT);
-            player_anim_dir = 2;
-        }
-        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            player.setDirection(Direction::RIGHT);
-            player_anim_dir = 3;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+            direction_queue.push(Direction::UP);
+        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) 
+            direction_queue.push(Direction::DOWN);
+        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+            direction_queue.push(Direction::LEFT);
+        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+            direction_queue.push(Direction::RIGHT);
+
+        if(!direction_queue.empty()) {
+           Direction next_direction = direction_queue.front();
+
+            // set the player direction to the next direction in the queue
+            player.setDirection(next_direction);
+            direction_queue.pop();
+
+            switch(next_direction) {
+                case Direction::UP:
+                    player_anim_dir = 0;
+                    break;
+                case Direction::DOWN:
+                    player_anim_dir = 1;
+                    break;
+                case Direction::LEFT:
+                    player_anim_dir = 2;
+                    break;
+                case Direction::RIGHT:
+                    player_anim_dir = 3;
+                    break;
+                default:
+                    break;
+            }
+
         }
 
-        // update sprite and move player
         player.setTextureRect(sf::IntRect(player_anim * sprite_size, player_anim_dir * sprite_size, sprite_size, sprite_size));
         player.move(delta_time);
 
         // check if player is colliding with a tile
-        if(isPlayerCollidingTile(player))
-            player.move(-delta_time);
+        if (isPlayerCollidingTile(player))
+            player.move(-delta_time);                    
 
         // check if player is out of bounds
         // if so, teleport player to other side of the screen
