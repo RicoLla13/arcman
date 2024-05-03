@@ -46,6 +46,33 @@ void Game::convertMap(std::array<std::string, tile_grid_height> map) {
     }
 }
 
+bool Game::isPlayerCollidingTile(MovingEntity& player) {
+    sf::FloatRect player_bounds = player.getGlobalBounds();
+
+    int start_x = std::max(0, static_cast<int>((player_bounds.left - (rect_size - 1)) / rect_size));
+    int start_y = std::max(0, static_cast<int>((player_bounds.top - (rect_size - 1)) / rect_size));
+    int end_x = std::min(tile_grid_width, static_cast<int>((player_bounds.left + player_bounds.width + (rect_size - 1)) / rect_size));
+    int end_y = std::min(tile_grid_height, static_cast<int>((player_bounds.top + player_bounds.height + (rect_size - 1)) / rect_size));
+
+    for(int i = start_y; i < end_y; i++) {
+        for(int j = start_x; j < end_x; j++) {
+            if(grid[i][j]->isSolid()) {
+                sf::FloatRect tile_bounds = grid[i][j]->getGlobalBounds();
+
+                tile_bounds.left -= 1.0f;
+                tile_bounds.top -= 1.0f;
+                tile_bounds.width -= 2.0f;
+                tile_bounds.height -= 2.0f;
+
+                if(player_bounds.intersects(tile_bounds))
+                    return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 void Game::gameLoop() {
     MovingEntity player(sf::Vector2f(1.0f * rect_size, 1.0f * rect_size), 300.0f, player_texture);
     player.setScale(sprite_scale, sprite_scale);
@@ -96,6 +123,10 @@ void Game::gameLoop() {
         // update sprite and move player
         player.setTextureRect(sf::IntRect(player_anim * sprite_size, player_anim_dir * sprite_size, sprite_size, sprite_size));
         player.move(delta_time);
+
+        // check if player is colliding with a tile
+        if(isPlayerCollidingTile(player))
+            player.move(-delta_time);
 
         // check if player is out of bounds
         // if so, teleport player to other side of the screen

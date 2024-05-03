@@ -4,7 +4,7 @@
 #include <string>
 
 constexpr int frame_rate = 60;
-constexpr int sprite_scale = 3;
+constexpr float sprite_scale = 3;
 constexpr int sprite_size = 16;
 constexpr int rect_size = sprite_size * sprite_scale;
 

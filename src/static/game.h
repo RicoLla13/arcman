@@ -34,6 +34,9 @@ class Game : public sf::RenderWindow {
         void gameLoop();
         void convertMap(std::array<std::string, tile_grid_height> map);
         void loadTextures();
+
+        // entity related functions
+        bool isPlayerCollidingTile(MovingEntity& player);
 };
 
 #endif
