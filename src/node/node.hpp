@@ -13,6 +13,7 @@ Node* nodeLeft;
 
     public:
         Node(const sf::Vector2f& position);
+        Node(float x, float y) : Node(sf::Vector2f(x, y)) { }
 
         void setNodeUp(Node* node) { this->nodeUp = node; }
         void setNodeDown(Node* node) { this->nodeDown = node; }
@@ -25,6 +26,7 @@ Node* nodeLeft;
         Node* getNodeDown() const { return nodeDown; }
         Node* getNodeLeft() const { return nodeLeft; }
         Node* getNodeRight() const { return nodeRight; }
+        std::vector<Node*> getNeighbors() const { return {nodeUp, nodeDown, nodeLeft, nodeRight}; }
 
         sf::Vector2f getPosition() const { return position; }
 };
