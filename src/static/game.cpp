@@ -37,7 +37,7 @@ void Game::drawNodes() {
             throw CustomException("[!] #gameLoop()# -> A node in node vector is null!");
 
         sf::CircleShape circle(20);
-        circle.setFillColor(sf::Color::Red);
+        circle.setFillColor(sf::Color::Blue);
         circle.setPosition(node->getPosition());
         this->draw(circle);
 
@@ -99,6 +99,13 @@ void Game::setupTestNodes() {
 }
 
 void Game::gameLoop() {
+    Player player(nodes[0], player_texture, 100.0f);
+    player.setScale(sprite_scale, sprite_scale);
+    player.setTextureOffset(0, 3);
+
+    float delta_time = 0.0f;
+    Direction direction = Direction::NONE;
+
     while (this->isOpen()) {
         // window event handling
         sf::Event event;
@@ -107,10 +114,27 @@ void Game::gameLoop() {
                 this->close();
         }
 
+        // manage key presses
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+            direction = Direction::UP;
+        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+            direction = Direction::DOWN;
+        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+            direction = Direction::LEFT;
+        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+            direction = Direction::RIGHT;
+        
+        player.changeNode(direction, delta_time);
+
+        // calculate delta time
+        delta_time = clock.restart().asSeconds();
+
         // clear window
         this->clear();
 
         this->drawNodes();
+
+        this->draw(player);
 
         this->display();
     }

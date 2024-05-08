@@ -7,11 +7,16 @@
 #include <string>
 
 class Entity : public sf::Sprite {
+    protected:
+        float speed;
+        sf::Vector2f velocity;
+
     public:
-        Entity(const sf::Vector2f& grid_position);
-        Entity(const sf::Vector2f& grid_position, const sf::Texture& texture);
+        Entity(const sf::Vector2f& grid_position, const sf::Texture& texture, float speed);
+
         void setTextureOffset(int x_off, int y_off);
-        virtual ~Entity() {}
+        void setDirection(Direction direction);
+        void move(float delta_time);
 };
 
 #endif

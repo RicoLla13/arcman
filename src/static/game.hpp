@@ -3,6 +3,8 @@
 
 #include "../global.hpp"
 #include "../node/node.hpp"
+#include "../entity/entity.hpp"
+#include "../entity/player.hpp"
 #include "../exception/custom_exception.hpp"
 
 #include <SFML/Graphics.hpp>
@@ -15,6 +17,8 @@ class Game : public sf::RenderWindow {
 
         sf::Texture player_texture;
         std::vector<Node*> nodes;
+        
+        sf::Clock clock;
 
         Game();
 
