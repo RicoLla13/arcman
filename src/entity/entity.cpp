@@ -1,4 +1,4 @@
-#include "entity.h"
+#include "entity.hpp"
 
 Entity::Entity(const sf::Vector2f& grid_position) {
     this->setPosition(grid_position);

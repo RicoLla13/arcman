@@ -1,7 +1,7 @@
 #ifndef ENTITY_CLASS
 #define ENTITY_CLASS
 
-#include "../global.h"
+#include "../global.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <string>

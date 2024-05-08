@@ -1,4 +1,4 @@
-#include "game.h"
+#include "game.hpp"
 
 #include <iostream>
 
@@ -17,72 +17,16 @@ Game& Game::getInstance() {
 }
 
 void Game::loadTextures() {
-    if(!tile_texture.loadFromFile("assets/Debug_Tile.png"))
-        throw CustomException("[!] #loadTextures()# -> Tile image not found!");
     if(!player_texture.loadFromFile("assets/Player.png"))
         throw CustomException("[!] #loadTextures()# -> Player image not found!");
 }
 
-void Game::convertMap(std::array<std::string, tile_grid_height> map) {
-    for(int i = 0; i < tile_grid_height; i++) {
-        std::vector<Tile*> row;
-
-        for(int j = 0; j < tile_grid_width; j++) {
-            Tile* tile = new Tile(sf::Vector2f(j * rect_size, i * rect_size));
-
-            if(map[i][j] == '#') {
-                tile->setTexture(tile_texture);
-                tile->setSolid(true);
-            }
-            else
-                tile->setSolid(false);
-
-            tile->setScale(sprite_scale, sprite_scale);
-            tile->setTextureRect(sf::IntRect(0, 0, sprite_size, sprite_size));
-            row.push_back(tile);
-        }
-
-        grid.push_back(row);
-    }
-}
-
-bool Game::isPlayerCollidingTile(MovingEntity& player) {
-    sf::FloatRect player_bounds = player.getGlobalBounds();
-
-    int start_x = std::max(0, static_cast<int>((player_bounds.left - (rect_size - 1)) / rect_size));
-    int start_y = std::max(0, static_cast<int>((player_bounds.top - (rect_size - 1)) / rect_size));
-    int end_x = std::min(tile_grid_width, static_cast<int>((player_bounds.left + player_bounds.width + (rect_size - 1)) / rect_size));
-    int end_y = std::min(tile_grid_height, static_cast<int>((player_bounds.top + player_bounds.height + (rect_size - 1)) / rect_size));
-
-    for(int i = start_y; i < end_y; i++) {
-        for(int j = start_x; j < end_x; j++) {
-            if(grid[i][j]->isSolid()) {
-                sf::FloatRect tile_bounds = grid[i][j]->getGlobalBounds();
-
-                tile_bounds.left -= 1.0f;
-                tile_bounds.top -= 1.0f;
-                tile_bounds.width -= 2.0f;
-                tile_bounds.height -= 2.0f;
-
-                if(player_bounds.intersects(tile_bounds))
-                    return true;
-            }
-        }
-    }
-
-    return false;
-}
-
 void Game::gameLoop() {
-    MovingEntity player(sf::Vector2f(1.0f * rect_size, 1.0f * rect_size), 300.0f, player_texture);
-    player.setScale(sprite_scale, sprite_scale);
-    player.setTextureRect(sf::IntRect(0, 0, sprite_size, sprite_size));
-    
-    float delta_time = 0.0f;
-    float player_anim_time = 0.0f;
-    float player_anim_speed = 0.1f;
-    short player_anim = 0;
-    short player_anim_dir = 0;
+    std::vector<Node*> nodes;
+
+    // create nodes
+    for (int i = 0; i < 10; i++)
+        nodes.push_back(new Node(sf::Vector2f(i * 100, 0)));
 
     while (this->isOpen()) {
         // window event handling
@@ -92,87 +36,21 @@ void Game::gameLoop() {
                 this->close();
         }
 
-        // compute delta time of each frame, using the clock
-        delta_time = clock.restart().asSeconds();
-
-        // manage if player mouth is open or closed, using the defined timers
-        player_anim_time += delta_time;
-        if(player_anim_time >= player_anim_speed) {
-            player_anim_time = 0.0f;
-            player_anim = !player_anim;
-        }
-
-        // manage player direction, and sprite direction
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-            direction_queue.push(Direction::UP);
-        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) 
-            direction_queue.push(Direction::DOWN);
-        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-            direction_queue.push(Direction::LEFT);
-        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-            direction_queue.push(Direction::RIGHT);
-
-        if(!direction_queue.empty()) {
-           Direction next_direction = direction_queue.front();
-
-            // set the player direction to the next direction in the queue
-            player.setDirection(next_direction);
-            direction_queue.pop();
-
-            switch(next_direction) {
-                case Direction::UP:
-                    player_anim_dir = 0;
-                    break;
-                case Direction::DOWN:
-                    player_anim_dir = 1;
-                    break;
-                case Direction::LEFT:
-                    player_anim_dir = 2;
-                    break;
-                case Direction::RIGHT:
-                    player_anim_dir = 3;
-                    break;
-                default:
-                    break;
-            }
-
-        }
-
-        player.setTextureRect(sf::IntRect(player_anim * sprite_size, player_anim_dir * sprite_size, sprite_size, sprite_size));
-        player.move(delta_time);
-
-        // check if player is colliding with a tile
-        if (isPlayerCollidingTile(player))
-            player.move(-delta_time);                    
-
-        // check if player is out of bounds
-        // if so, teleport player to other side of the screen
-        sf::Vector2f player_pos = player.getPosition();
-        if(player_pos.x < -rect_size)
-            player.setPosition(window_width + rect_size, player_pos.y);
-        else if(player_pos.x > window_width + rect_size)
-            player.setPosition(-rect_size, player_pos.y);
-        else if(player_pos.y < -rect_size)
-            player.setPosition(player_pos.x, window_height + rect_size);
-        else if(player_pos.y > window_height + rect_size)
-            player.setPosition(player_pos.x, -rect_size);
-
         // clear window
         this->clear();
 
-        // draw tile grid on window
-        for(auto& row : grid) {
-            for(auto& tile : row)
-            this->draw(*tile);
+        // for each node draw a red circle with radius 20
+        for(auto node : nodes) {
+            sf::CircleShape circle(20);
+            circle.setFillColor(sf::Color::Red);
+            circle.setPosition(node->getPosition());
+            this->draw(circle);
         }
 
-        this->draw(player);
         this->display();
     }
-    
-    // free memory
-    for(auto& row : grid) {
-        for(auto& tile : row)
-            delete tile;
-    }
+
+    // cleanup
+    for(auto node : nodes)
+        delete node;
 }
