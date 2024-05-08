@@ -42,7 +42,7 @@ void Game::drawNodes() {
         this->draw(circle);
 
         // draw connections
-        for(auto neighbor : node->getNeighbors()) {
+        for(auto neighbor : node->getAllNeighbours()) {
             if(neighbor == nullptr)
                 continue;
 
@@ -99,7 +99,7 @@ void Game::setupTestNodes() {
 }
 
 void Game::gameLoop() {
-    Player player(nodes[0], player_texture, 100.0f);
+    Player player(nodes[0], player_texture, 200.0f);
     player.setScale(sprite_scale, sprite_scale);
     player.setTextureOffset(0, 3);
 
@@ -114,20 +114,10 @@ void Game::gameLoop() {
                 this->close();
         }
 
-        // manage key presses
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-            direction = Direction::UP;
-        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-            direction = Direction::DOWN;
-        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-            direction = Direction::LEFT;
-        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-            direction = Direction::RIGHT;
-        
-        player.changeNode(direction, delta_time);
-
         // calculate delta time
         delta_time = clock.restart().asSeconds();
+
+        player.update(delta_time);
 
         // clear window
         this->clear();

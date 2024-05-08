@@ -17,6 +17,7 @@ class Entity : public sf::Sprite {
         void setTextureOffset(int x_off, int y_off);
         void setDirection(Direction direction);
         void move(float delta_time);
+        virtual void update(float delta_time) {};
 };
 
 #endif

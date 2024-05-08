@@ -6,48 +6,64 @@ Player::Player(const sf::Vector2f& grid_position, const sf::Texture& texture, fl
 Player::Player(Node* start_node, const sf::Texture& texture, float speed) :
     Entity(start_node->getPosition(), texture, speed), current_node(start_node) {}
 
-void Player::changeNode(Direction& direction, float delta_time) {
-    if (direction == Direction::NONE)
-        return;
-    else if(direction == last_direction) {
-        sf::Vector2f target_position = current_node->getPosition();
-        sf::Vector2f current_position = getPosition();
+Node* Player::getNewTargetNode() {
+    if(direction != Direction::NONE)
+        if(current_node->getNeighbour(direction) != nullptr)
+            return current_node->getNeighbour(direction);
 
-        if(std::abs(target_position.x - current_position.x) < speed * delta_time &&
-           std::abs(target_position.y - current_position.y) < speed * delta_time) {
-            setPosition(target_position);
-            setDirection(Direction::NONE);
-        } else {
-            move(delta_time);
-        }
+    return current_node;
+}
 
-        return;
-    }
+bool Player::nodeOvershoot() const {
+     if(target_node == nullptr)
+        return false;
 
-    while(true) {
-        Node* next_node = nullptr;
+    sf::Vector2f target_position = target_node->getPosition() - current_node->getPosition();
+    sf::Vector2f player_position = getPosition() - current_node->getPosition();
 
-        switch (direction) {
-            case Direction::UP:
-                next_node = current_node->getNodeUp();
-                break;
-            case Direction::DOWN:
-                next_node = current_node->getNodeDown();
-                break;
-            case Direction::LEFT:
-                next_node = current_node->getNodeLeft();
-                break;
-            case Direction::RIGHT:
-                next_node = current_node->getNodeRight();
-                break;
-        }
+    float tp_length = target_position.x * target_position.x + target_position.y * target_position.y;
+    float pp_length = player_position.x * player_position.x + player_position.y * player_position.y;
 
-        if(next_node != nullptr)
-            current_node = next_node;
-        else
-            break;
-    }
+    return pp_length >= tp_length;
+}
 
-    last_direction = direction;
+bool Player::oppositeDirection(Direction& direction) const {
+    if(direction == Direction::UP && this->direction == Direction::DOWN)
+        return true;
+    else if(direction == Direction::DOWN && this->direction == Direction::UP)
+        return true;
+    else if(direction == Direction::LEFT && this->direction == Direction::RIGHT)
+        return true;
+    else if(direction == Direction::RIGHT && this->direction == Direction::LEFT)
+        return true;
+    return false;
+}
+
+void Player::update(float delta_time) {
     setDirection(direction);
+    move(delta_time);
+
+    Direction temp_direction = direction;
+
+    // manage key presses
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+        direction = Direction::UP;
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+        direction = Direction::DOWN;
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+        direction = Direction::LEFT;
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+        direction = Direction::RIGHT;
+
+    target_node = getNewTargetNode();
+
+    if(nodeOvershoot()) {
+        current_node = target_node;
+        target_node = getNewTargetNode();
+        
+        if(target_node == current_node)
+            direction = Direction::NONE;
+
+        setPosition(current_node->getPosition());
+    }
 }
