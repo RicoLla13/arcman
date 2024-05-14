@@ -7,26 +7,17 @@ Node::Node(const sf::Vector2f& position) {
         neighbors.push_back(nullptr);
 }
 
-void Node::setNodeUp(Node* node) {
-    this->neighbors[static_cast<int>(Direction::UP)] = node;
+void Node::setNeighbour(const Direction& direction, Node* node) {
+    if(direction == Direction::NONE)
+        throw CustomException("[!] #Node :: setNode()# -> Direction cannot be NONE!");
+    
+    neighbors[static_cast<int>(direction)] = node;
 }
 
-void Node::setNodeDown(Node* node) {
-    this->neighbors[static_cast<int>(Direction::DOWN)] = node;
-}
-
-void Node::setNodeLeft(Node* node) {
-    this->neighbors[static_cast<int>(Direction::LEFT)] = node;
-}
-
-void Node::setNodeRight(Node* node) {
-    this->neighbors[static_cast<int>(Direction::RIGHT)] = node;
-}
-
-void Node::setNeighbours(std::vector<Node*> neighbors) {
+void Node::setAllNeighbours(const std::vector<Node*>& neighbors) {
     this->neighbors = neighbors;
 }
 
-Node* Node::getNeighbour(Direction direction) const {
+Node* Node::getNeighbour(const Direction& direction) const {
     return neighbors[static_cast<int>(direction)];
 }

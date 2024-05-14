@@ -2,6 +2,7 @@
 #define NODE
 
 #include "../global.hpp"
+#include "../exception/custom_exception.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -14,15 +15,12 @@ class Node {
         Node(const sf::Vector2f& position);
         Node(float x, float y) : Node(sf::Vector2f(x, y)) { }
 
-        void setNodeUp(Node* node); 
-        void setNodeDown(Node* node); 
-        void setNodeLeft(Node* node);
-        void setNodeRight(Node* node);
-        void setNeighbours(std::vector<Node*> neighbors);
+        void setNeighbour(const Direction& direction, Node* node); 
+        void setAllNeighbours(const std::vector<Node*>& neighbors);
 
-        void setPosition(sf::Vector2f position) { this->position = position; }
+        void setPosition(const sf::Vector2f& position) { this->position = position; }
 
-        Node* getNeighbour(Direction direction) const;
+        Node* getNeighbour(const Direction& direction) const;
         std::vector<Node*> getAllNeighbours() const { return neighbors; }
 
         sf::Vector2f getPosition() const { return position; }

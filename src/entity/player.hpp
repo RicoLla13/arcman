@@ -15,6 +15,7 @@ class Player : public Entity {
         bool nodeOvershoot() const;
         bool oppositeDirection(Direction& direction) const;
         Node* getNewTargetNode();
+        void getValidKeyPress();
             
     public:
         Player(const sf::Vector2f& grid_position, const sf::Texture& texture, float speed);

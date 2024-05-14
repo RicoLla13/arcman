@@ -74,28 +74,28 @@ void Game::setupTestNodes() {
 
     // define node connections
     // node A
-    nodes[0]->setNodeRight(nodes[1]); // A -> B
-    nodes[0]->setNodeDown(nodes[2]); // A -> C
+    nodes[0]->setNeighbour(Direction::RIGHT, nodes[1]); // A -> B
+    nodes[0]->setNeighbour(Direction::DOWN, nodes[2]); // A -> C
     // node B
-    nodes[1]->setNodeLeft(nodes[0]); // B -> A
-    nodes[1]->setNodeDown(nodes[3]); // B -> D
+    nodes[1]->setNeighbour(Direction::LEFT, nodes[0]); // B -> A
+    nodes[1]->setNeighbour(Direction::DOWN, nodes[3]); // B -> D
     // node C
-    nodes[2]->setNodeUp(nodes[0]); // C -> A
-    nodes[2]->setNodeRight(nodes[3]); // C -> D
-    nodes[2]->setNodeDown(nodes[5]); // C -> F
+    nodes[2]->setNeighbour(Direction::UP, nodes[0]); // C -> A
+    nodes[2]->setNeighbour(Direction::RIGHT, nodes[3]); // C -> D
+    nodes[2]->setNeighbour(Direction::DOWN, nodes[5]); // C -> F
     // node D
-    nodes[3]->setNodeUp(nodes[1]); // D -> B
-    nodes[3]->setNodeLeft(nodes[2]); // D -> C
-    nodes[3]->setNodeRight(nodes[4]); // D -> E
+    nodes[3]->setNeighbour(Direction::UP, nodes[1]); // D -> B
+    nodes[3]->setNeighbour(Direction::LEFT, nodes[2]); // D -> C
+    nodes[3]->setNeighbour(Direction::RIGHT, nodes[4]); // D -> E
     // node E
-    nodes[4]->setNodeLeft(nodes[3]); // E -> D
-    nodes[4]->setNodeDown(nodes[6]); // E -> G
+    nodes[4]->setNeighbour(Direction::LEFT, nodes[3]); // E -> D
+    nodes[4]->setNeighbour(Direction::DOWN, nodes[6]); // E -> G
     // node F
-    nodes[5]->setNodeUp(nodes[2]); // F -> C
-    nodes[5]->setNodeRight(nodes[6]); // F -> G
+    nodes[5]->setNeighbour(Direction::UP, nodes[2]); // F -> C
+    nodes[5]->setNeighbour(Direction::RIGHT, nodes[6]); // F -> G
     // node G
-    nodes[6]->setNodeUp(nodes[4]); // G -> E
-    nodes[6]->setNodeLeft(nodes[5]); // G -> F
+    nodes[6]->setNeighbour(Direction::UP, nodes[4]); // G -> E
+    nodes[6]->setNeighbour(Direction::LEFT, nodes[5]); // G -> F
 }
 
 void Game::gameLoop() {
@@ -104,7 +104,6 @@ void Game::gameLoop() {
     player.setTextureOffset(0, 3);
 
     float delta_time = 0.0f;
-    Direction direction = Direction::NONE;
 
     while (this->isOpen()) {
         // window event handling
