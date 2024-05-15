@@ -17,19 +17,19 @@ Node* Player::getNewTargetNode() {
 void Player::getValidKeyPress() {
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
         direction = Direction::UP;
-        std::cout << "W pressed" << std::endl;
+        // std::cout << "W pressed" << std::endl;
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
         direction = Direction::DOWN;
-        std::cout << "S pressed" << std::endl;
+        // std::cout << "S pressed" << std::endl;
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
         direction = Direction::LEFT;
-        std::cout << "S pressed" << std::endl;
+        // std::cout << "S pressed" << std::endl;
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
         direction = Direction::RIGHT;
-        std::cout << "S pressed" << std::endl;
+        // std::cout << "S pressed" << std::endl;
     }
 }
 
@@ -62,5 +62,5 @@ void Player::update(float delta_time) {
         direction = Direction::NONE;
     }
 
-    std::cout << static_cast<int>(direction) << std::endl;
+    // std::cout << static_cast<int>(direction) << std::endl;
 }
