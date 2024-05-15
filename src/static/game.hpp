@@ -16,6 +16,7 @@ class Game : public sf::RenderWindow {
         std::string window_title = "ARCMAN";
 
         sf::Texture player_texture;
+        sf::Texture background_texture;
         std::vector<Node*> nodes;
         
         sf::Clock clock;
