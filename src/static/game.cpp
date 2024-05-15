@@ -198,8 +198,9 @@ void Game::setupTestNodes() {
 
 void Game::gameLoop() {
     sf::Sprite background(background_texture);
+    background.setScale(sprite_scale, sprite_scale);
 
-    Player player(nodes[0], player_texture, 300.0f);
+    Player player(nodes[0], player_texture, 350.0f);
     player.setScale(sprite_scale, sprite_scale);
     player.setTextureOffset(0, 3);
 
@@ -221,9 +222,9 @@ void Game::gameLoop() {
         // clear window
         this->clear();
 
-        // this->draw(background);
+        this->draw(background);
 
-        this->drawNodes();
+        // this->drawNodes();
 
         this->draw(player);
 

@@ -68,6 +68,14 @@ void Player::update(float delta_time) {
         direction = local_direction;
     }
 
+    elapsed_time += delta_time;
+    if(elapsed_time - mouth_animation_time >= 0) {
+        elapsed_time = 0.0f;
+        mouth_offset = !mouth_offset;
+    }
+
+    setTextureOffset(mouth_offset, static_cast<int>(direction));
+
     setDirection(direction);
     move(delta_time);
 }
