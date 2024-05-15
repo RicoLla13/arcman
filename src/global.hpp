@@ -1,5 +1,4 @@
-#ifndef GLOBAL_H
-#define GLOBAL_H
+#pragma once
 
 #include <string>
 #include <cstdint>
@@ -23,4 +22,4 @@ enum class Direction {
     NONE = -1
 };
 
-#endif
+bool isOppositeDirection(const Direction& d1, const Direction& d2);

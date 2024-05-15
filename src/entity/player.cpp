@@ -14,23 +14,17 @@ Node* Player::getNewTargetNode() {
     return current_node;
 }
 
-void Player::getValidKeyPress() {
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-        direction = Direction::UP;
-        // std::cout << "W pressed" << std::endl;
-    }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-        direction = Direction::DOWN;
-        // std::cout << "S pressed" << std::endl;
-    }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        direction = Direction::LEFT;
-        // std::cout << "S pressed" << std::endl;
-    }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-        direction = Direction::RIGHT;
-        // std::cout << "S pressed" << std::endl;
-    }
+Direction Player::getValidKeyPress() {
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+        return Direction::UP;
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+        return Direction::DOWN;
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+        return Direction::LEFT;
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+        return Direction::RIGHT;
+
+    return this->direction;
 }
 
 bool Player::nodeOvershoot() const {
@@ -47,20 +41,33 @@ bool Player::nodeOvershoot() const {
 }
 
 void Player::update(float delta_time) {
-    // setDirection(direction);
-    // move(delta_time);
-
-    // manage key presses
-    getValidKeyPress();
-
     target_node = getNewTargetNode();
 
-    if(current_node != target_node) {
-        setPosition(target_node->getPosition());
-        current_node = target_node;
+    if(nodeOvershoot()) {
+        if(current_node != target_node) {
+            setPosition(target_node->getPosition());
+            current_node = target_node;
 
-        direction = Direction::NONE;
+            stop();
+        }
+    }
+    else 
+        start();
+    
+    Direction local_direction = getValidKeyPress(); 
+
+    if(isOppositeDirection(local_direction, direction)) {
+        Node* tmp = current_node;
+        current_node = target_node;
+        target_node = tmp;
+
+        direction = local_direction;
     }
 
-    // std::cout << static_cast<int>(direction) << std::endl;
+    if(!this->is_moving) {
+        direction = local_direction;
+    }
+
+    setDirection(direction);
+    move(delta_time);
 }

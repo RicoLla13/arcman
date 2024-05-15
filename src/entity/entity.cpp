@@ -1,7 +1,7 @@
 #include "entity.hpp"
 
 Entity::Entity(const sf::Vector2f& grid_position, const sf::Texture& texture, float speed) :
-    sf::Sprite(texture), speed(speed) {
+    sf::Sprite(texture), speed_norm(speed) {
         this->setPosition(grid_position);
     }
 
@@ -12,16 +12,16 @@ void Entity::setTextureOffset(int x_off, int y_off) {
 void Entity::setDirection(Direction direction) {
     switch(direction) {
         case Direction::UP:
-            velocity = sf::Vector2f(0, -speed);
+            velocity = sf::Vector2f(0, -1);
             break;
         case Direction::DOWN:
-            velocity = sf::Vector2f(0, speed);
+            velocity = sf::Vector2f(0, 1);
             break;
         case Direction::LEFT:
-            velocity = sf::Vector2f(-speed, 0);
+            velocity = sf::Vector2f(-1, 0);
             break;
         case Direction::RIGHT:
-            velocity = sf::Vector2f(speed, 0);
+            velocity = sf::Vector2f(1, 0);
             break;
         default:
             velocity = sf::Vector2f(0, 0);
@@ -30,5 +30,15 @@ void Entity::setDirection(Direction direction) {
 }
 
 void Entity::move(float delta_time) {
-    sf::Sprite::move(velocity * delta_time);
+    sf::Sprite::move(velocity * current_speed * delta_time);
+}
+
+void Entity::start() {
+    current_speed = speed_norm;
+    is_moving = true;
+}
+
+void Entity::stop() {
+    current_speed = 0;
+    is_moving = false;
 }

@@ -99,7 +99,7 @@ void Game::setupTestNodes() {
 }
 
 void Game::gameLoop() {
-    Player player(nodes[0], player_texture, 200.0f);
+    Player player(nodes[0], player_texture, 300.0f);
     player.setScale(sprite_scale, sprite_scale);
     player.setTextureOffset(0, 3);
 

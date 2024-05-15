@@ -1,5 +1,4 @@
-#ifndef PLAYER
-#define PLAYER
+#pragma once
 
 #include "entity.hpp"
 #include "../node/node.hpp"
@@ -13,9 +12,8 @@ class Player : public Entity {
         Direction direction = Direction::NONE;
         
         bool nodeOvershoot() const;
-        bool oppositeDirection(Direction& direction) const;
         Node* getNewTargetNode();
-        void getValidKeyPress();
+        Direction getValidKeyPress();
             
     public:
         Player(const sf::Vector2f& grid_position, const sf::Texture& texture, float speed);
@@ -23,5 +21,3 @@ class Player : public Entity {
 
         void update(float delta_time) override;
 };
-
-#endif
