@@ -6,5 +6,7 @@
 !src/**
 !assets/
 !assets/**
+!doc/
+!doc/**
 !CMakeLists.txt
 !README.md
