@@ -17,6 +17,12 @@ add_executable(Arcman ${SRC_FILES})
 target_link_libraries(Arcman PRIVATE sfml-graphics)
 target_compile_features(Arcman PRIVATE cxx_std_17)
 
+add_custom_command (
+    TARGET Arcman
+    COMMENT "Copy resources"
+    POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:Arcman>/assets
+    VERBATIM)
+
 if(WIN32)
     add_custom_command(
         TARGET Arcman
