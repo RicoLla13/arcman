@@ -26,3 +26,9 @@ If not, you can go to the [Compilation](doc/compilation.md) section.
 
 ![SFML Logo](https://www.sfml-dev.org/images/logo.png)
 * SFML 2.6.1 or higher
+
+## 👨‍💻 Tools used for development
+
+* Operating system: Arch Linux (& Debian, Windows for testing)
+* Text editor: Neovim
+* Diagrams: draw.io
