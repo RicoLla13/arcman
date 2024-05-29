@@ -8,7 +8,7 @@ Here, you will find the source code, build instructions and a little documentati
 - [Motivation and Objectives](doc/motivation.md) 
 - [Compilation](doc/compilation.md)
 - [Code documentation](doc/code_doc.md)
-- [UML scheme](doc/uml.md)
+- [UML diagram](doc/uml.pdf)
 
 ## 📈 How to Use
 
