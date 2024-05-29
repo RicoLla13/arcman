@@ -25,11 +25,56 @@ Game& Game::getInstance() {
     return instance;
 }
 
+void Game::state_machine() {
+    bool stop = false;
+    while(!stop) {
+        switch(this->current_state) {
+            case GameState::INIT:
+                try {
+                    this->loadTextures();
+                } catch(CustomException& e) {
+                    std::cerr << e.what() << std::endl;
+                    return;
+                }
+                this->setupTestNodes();
+                current_state = GameState::MENU;
+                break;
+            case GameState::MENU:
+                current_state = this->menu();
+                break;
+            case GameState::RUN:
+                this->loop();
+                current_state = GameState::CLOSE;
+                break;
+            case GameState::GAME_OVER:
+                this->gameOver();
+                break;
+            default:
+                stop = true;
+                break;
+        }
+    }
+}
+
+bool Game::handleEvent() {
+    sf::Event event;
+    while (this->pollEvent(event)) {
+        if (event.type == sf::Event::Closed)
+            return true;
+    }
+
+    return false;
+}
+
 void Game::loadTextures() {
     if(!player_texture.loadFromFile("assets/Player.png"))
         throw CustomException("[!] #loadTextures()# -> Player image not found!");
-    if(!background_texture.loadFromFile("assets/Level_1.png"))
+    if(!maze_texture.loadFromFile("assets/Level_1.png"))
         throw CustomException("[!] #loadTextures()# -> Level 1 image not found!");
+    if(!menu_texture.loadFromFile("assets/Menu.png"))
+        throw CustomException("[!] #loadTextures()# -> Menu image not found!");
+    if(!button_texture.loadFromFile("assets/Buttons.png"))
+        throw CustomException("[!] #loadTextures()# -> Menu image not found!");
 }
 
 void Game::drawNodes() {
@@ -64,8 +109,57 @@ void Game::drawNodes() {
     }
 }
 
-void Game::gameLoop() {
-    sf::Sprite background(background_texture);
+GameState Game::menu() {
+    sf::Sprite background(menu_texture);
+    background.setScale(sprite_scale, sprite_scale);
+
+    sf::Sprite button_play(button_texture);
+    button_play.setScale(sprite_scale, sprite_scale);
+    button_play.setTextureRect(sf::IntRect(0, sprite_size, 5 * sprite_size , sprite_size));
+    button_play.setPosition(5 * rect_size, 8 * rect_size);
+
+    sf::Sprite button_exit(button_texture);
+    button_exit.setScale(sprite_scale, sprite_scale);
+    button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
+    button_exit.setPosition(5 * rect_size, 10 * rect_size);
+
+    bool selection = true;
+    while(this->isOpen()) {
+        if(this->handleEvent())
+            break;
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+            selection = true;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+            selection = false;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
+            if(selection)
+                return GameState::RUN;
+            else
+                break;
+        }
+
+        if(selection) {
+            button_play.setTextureRect(sf::IntRect(0, sprite_size, 5 * sprite_size , sprite_size));
+            button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
+        }
+        else {
+            button_play.setTextureRect(sf::IntRect(0, 0, 5 * sprite_size , sprite_size));
+            button_exit.setTextureRect(sf::IntRect(0, 3 * sprite_size, 5 * sprite_size , sprite_size));
+        }
+        
+        this->clear();
+        this->draw(background);
+        this->draw(button_play);
+        this->draw(button_exit);
+        this->display();
+    }
+
+    return GameState::CLOSE;
+}
+
+void Game::loop() {
+    sf::Sprite background(maze_texture);
     background.setScale(sprite_scale, sprite_scale);
 
     Player player(nodes[0], player_texture, 350.0f);
@@ -75,12 +169,8 @@ void Game::gameLoop() {
     float delta_time = 0.0f;
 
     while (this->isOpen()) {
-        // window event handling
-        sf::Event event;
-        while (this->pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                this->close();
-        }
+        if(this->handleEvent())
+            break;
 
         // calculate delta time
         delta_time = clock.restart().asSeconds();
@@ -99,3 +189,5 @@ void Game::gameLoop() {
         this->display();
     }
 }
+
+void Game::gameOver() {}

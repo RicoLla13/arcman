@@ -39,6 +39,14 @@ enum class Direction {
     NONE = -1
 };
 
+enum class GameState {
+    CLOSE,
+    INIT,
+    MENU,
+    RUN,
+    GAME_OVER
+};
+
 /* 
  * A funciton that checks if two provided directions are different,
  * used by various objects troughout the game

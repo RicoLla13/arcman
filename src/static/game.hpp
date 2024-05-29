@@ -1,5 +1,4 @@
-#ifndef GAME
-#define GAME
+#pragma once
 
 #include "../global.hpp"
 #include "../node/node.hpp"
@@ -16,14 +15,24 @@ class Game : public sf::RenderWindow {
         std::string window_title = "ARCMAN";
 
         sf::Texture player_texture;
-        sf::Texture background_texture;
+        sf::Texture maze_texture;
+        sf::Texture menu_texture;
+        sf::Texture button_texture;
         std::vector<Node*> nodes;
         
         sf::Clock clock;
 
+        GameState current_state = GameState::INIT;
+
         Game();
 
         void drawNodes();
+        void setupTestNodes();
+        bool handleEvent();
+        GameState menu();
+        void loop();
+        void gameOver();
+        void loadTextures();
 
     public:
         static Game& getInstance();
@@ -32,9 +41,5 @@ class Game : public sf::RenderWindow {
         void operator=(Game const&) = delete;
         ~Game();
 
-        void setupTestNodes();
-        void gameLoop();
-        void loadTextures();
+        void state_machine();
 };
-
-#endif
