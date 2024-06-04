@@ -14,15 +14,31 @@ Node* Player::getNewTargetNode() {
     return current_node;
 }
 
-Direction Player::getValidKeyPress() {
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-        return Direction::UP;
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-        return Direction::DOWN;
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-        return Direction::LEFT;
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-        return Direction::RIGHT;
+void Player::getValidKeyPress() {
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+        if(key_presses.empty() || key_presses.back() != Direction::UP)
+            key_presses.push(Direction::UP);
+    }
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+        if(key_presses.empty() || key_presses.back() != Direction::DOWN)
+            key_presses.push(Direction::DOWN);
+    }
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+        if(key_presses.empty() || key_presses.back() != Direction::LEFT)
+            key_presses.push(Direction::LEFT);
+    }
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+        if(key_presses.empty() || key_presses.back() != Direction::RIGHT)
+            key_presses.push(Direction::RIGHT);
+    }
+}
+
+Direction Player::computeDirection() {
+    if(!key_presses.empty()) {
+        Direction d = this->key_presses.front();
+        this->key_presses.pop();
+        return d;
+    }
 
     return this->direction;
 }
@@ -48,24 +64,26 @@ void Player::update(float delta_time) {
             setPosition(target_node->getPosition());
             current_node = target_node;
 
+            direction = computeDirection();
+
             stop();
         }
     }
-    else 
+    else
         start();
     
-    Direction local_direction = getValidKeyPress(); 
+    this->getValidKeyPress();
 
-    if(isOppositeDirection(local_direction, direction)) {
+    if(isOppositeDirection(this->key_presses.front(), direction)) {
         Node* tmp = current_node;
         current_node = target_node;
         target_node = tmp;
 
-        direction = local_direction;
+        direction = computeDirection();
     }
 
     if(!this->is_moving) {
-        direction = local_direction;
+        direction = computeDirection();
     }
 
     elapsed_time += delta_time;

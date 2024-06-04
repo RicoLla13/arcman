@@ -4,6 +4,7 @@
 #include "../node/node.hpp"
 #include "../entity/entity.hpp"
 #include "../entity/player.hpp"
+#include "../entity/ghost.hpp"
 #include "../exception/custom_exception.hpp"
 
 #include <SFML/Graphics.hpp>
@@ -15,6 +16,7 @@ class Game : public sf::RenderWindow {
         std::string window_title = "ARCMAN";
 
         sf::Texture player_texture;
+        sf::Texture ghost_texture;
         sf::Texture maze_texture;
         sf::Texture menu_texture;
         sf::Texture button_texture;

@@ -67,6 +67,8 @@ bool Game::handleEvent() {
 }
 
 void Game::loadTextures() {
+    if(!ghost_texture.loadFromFile("assets/Ghosts.png"))
+        throw CustomException("[!] #loadTextures()# -> Ghost image not found!");
     if(!player_texture.loadFromFile("assets/Player.png"))
         throw CustomException("[!] #loadTextures()# -> Player image not found!");
     if(!maze_texture.loadFromFile("assets/Level_1.png"))
@@ -166,6 +168,18 @@ void Game::loop() {
     player.setScale(sprite_scale, sprite_scale);
     player.setTextureOffset(0, 3);
 
+    Ghost python(sf::Vector2f(rect_size * 6, rect_size * 10), ghost_texture, ghost_speed);
+    python.setScale(sprite_scale, sprite_scale);
+    python.setTextureOffset(0, 4);
+
+    Ghost c_ghost(sf::Vector2f(rect_size * 7, rect_size * 10), ghost_texture, ghost_speed);
+    c_ghost.setScale(sprite_scale, sprite_scale);
+    c_ghost.setTextureOffset(2, 4);
+
+    Ghost vhdl(sf::Vector2f(rect_size * 8, rect_size * 10), ghost_texture, ghost_speed);
+    vhdl.setScale(sprite_scale, sprite_scale);
+    vhdl.setTextureOffset(4, 4);
+
     float delta_time = 0.0f;
 
     while (this->isOpen()) {
@@ -185,6 +199,10 @@ void Game::loop() {
         // this->drawNodes();
 
         this->draw(player);
+
+        this->draw(python);
+        this->draw(c_ghost);
+        this->draw(vhdl);
 
         this->display();
     }
