@@ -14,7 +14,7 @@
  * ## window_height    ## -> the height of the window in pixels
  */
 constexpr int frame_rate = 60;
-constexpr float sprite_scale = 3;
+constexpr float sprite_scale = 3.5f;
 constexpr int sprite_size = 16;
 constexpr int rect_size = static_cast<int8_t>(sprite_size * sprite_scale);
 
@@ -23,6 +23,8 @@ constexpr int tile_grid_height = 18;
 
 constexpr int window_width = tile_grid_width * sprite_size * sprite_scale;
 constexpr int window_height = tile_grid_height * sprite_size * sprite_scale;
+
+constexpr float player_speed = 400.0f;
 
 /*
  * Enum that represents the direction of an entity

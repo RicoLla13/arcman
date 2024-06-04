@@ -162,7 +162,7 @@ void Game::loop() {
     sf::Sprite background(maze_texture);
     background.setScale(sprite_scale, sprite_scale);
 
-    Player player(nodes[0], player_texture, 350.0f);
+    Player player(nodes[0], player_texture, player_speed);
     player.setScale(sprite_scale, sprite_scale);
     player.setTextureOffset(0, 3);
 
