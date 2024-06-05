@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <cstdint>
+#include <iostream>
 
 constexpr int frame_rate = 60;
 constexpr float sprite_scale = 3.5f;

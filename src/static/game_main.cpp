@@ -1,7 +1,5 @@
 #include "game.hpp"
 
-#include <iostream>
-
 Game::Game() {
     this->create(sf::VideoMode(window_width, window_height), window_title);
     this->setFramerateLimit(frame_rate);
@@ -168,15 +166,15 @@ void Game::loop() {
     player.setScale(sprite_scale, sprite_scale);
     player.setTextureOffset(0, 3);
 
-    Ghost python(sf::Vector2f(rect_size * 6, rect_size * 10), ghost_texture, ghost_speed);
+    Ghost python(nodes[22], ghost_texture, ghost_speed, 0);
     python.setScale(sprite_scale, sprite_scale);
     python.setTextureOffset(0, 4);
 
-    Ghost c_ghost(sf::Vector2f(rect_size * 7, rect_size * 10), ghost_texture, ghost_speed);
+    Ghost c_ghost(nodes[23], ghost_texture, ghost_speed, 1);
     c_ghost.setScale(sprite_scale, sprite_scale);
     c_ghost.setTextureOffset(2, 4);
 
-    Ghost vhdl(sf::Vector2f(rect_size * 8, rect_size * 10), ghost_texture, ghost_speed);
+    Ghost vhdl(nodes[24], ghost_texture, ghost_speed, 2);
     vhdl.setScale(sprite_scale, sprite_scale);
     vhdl.setTextureOffset(4, 4);
 
@@ -190,6 +188,9 @@ void Game::loop() {
         delta_time = clock.restart().asSeconds();
 
         player.update(delta_time);
+        python.update(delta_time);
+        c_ghost.update(delta_time);
+        vhdl.update(delta_time);
 
         // clear window
         this->clear();
@@ -200,9 +201,9 @@ void Game::loop() {
 
         this->draw(player);
 
-        this->draw(python);
-        this->draw(c_ghost);
-        this->draw(vhdl);
+        // this->draw(python);
+        // this->draw(c_ghost);
+        // this->draw(vhdl);
 
         this->display();
     }

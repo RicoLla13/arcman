@@ -6,6 +6,11 @@
 #include <iostream>
 
 class Ghost : public Entity {
+    private:
+        int ghost_number;
+
     public:
-        Ghost(const sf::Vector2f& grid_position, const sf::Texture& texture, float speed);
+        Ghost(Node* start_node, const sf::Texture& texture, float speed, int ghost_number);
+
+        void update(float delta_time) override;
 };

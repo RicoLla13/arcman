@@ -9,7 +9,6 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include <iostream>
 
 class Game : public sf::RenderWindow {
     private:

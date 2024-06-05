@@ -19,5 +19,8 @@ void Node::setAllNeighbours(const std::vector<Node*>& neighbors) {
 }
 
 Node* Node::getNeighbour(const Direction& direction) const {
-    return neighbors[static_cast<int>(direction)];
+    if(direction != Direction::NONE)
+        return neighbors[static_cast<int>(direction)];
+
+    return nullptr;
 }
