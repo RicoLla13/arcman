@@ -33,6 +33,12 @@ Game::~Game() {
         sprite = nullptr;
     }
 
+    for(auto sprite : progress) {
+        if(sprite != nullptr)
+            delete sprite;
+        sprite = nullptr;
+    }
+
     for(auto& row : pellets) {
         for(auto pellet : row) {
             if(pellet != nullptr)
@@ -177,6 +183,8 @@ void Game::initPellets() {
                 pellets[i][j] = nullptr;
         }
     }
+
+    init_pellet_num = pellet_num;
 }
 
 GameState Game::menu() {
@@ -236,9 +244,16 @@ void Game::loop() {
     timer.push_back(new sf::Sprite(numbers_texture));
     timer.push_back(new sf::Sprite(numbers_texture));
 
+    progress.push_back(new sf::Sprite(numbers_texture));
+    progress.push_back(new sf::Sprite(numbers_texture));
+    progress.push_back(new sf::Sprite(numbers_texture));
+
     for(int i = 0; i < timer.size(); i++) {
         timer[i]->setScale(sprite_scale, sprite_scale);
         timer[i]->setPosition(i * rect_size, rect_size);
+
+        progress[i]->setScale(sprite_scale, sprite_scale);
+        progress[i]->setPosition((i + 11) * rect_size, rect_size);
     }
 
     player = new Player(nodes[0], player_texture, player_speed);
@@ -268,9 +283,13 @@ void Game::loop() {
             ghost->update(delta_time);
 
         int seconds = static_cast<int>(player_timer);
+        int loc_progress = 100 - static_cast<int>(static_cast<float>(pellet_num) / static_cast<float>(init_pellet_num) * 100);
         for(int i = timer.size() - 1; i >=0; i--) {
             processNum(seconds % 10, timer[i]);
             seconds /= 10;
+
+            processNum(loc_progress % 10, progress[i]);
+            loc_progress /= 10;
         }
 
         this->checkPellets();
@@ -280,6 +299,9 @@ void Game::loop() {
         this->draw(background);
 
         for(auto sprite : timer)
+            this->draw(*sprite);
+
+        for(auto sprite : progress)
             this->draw(*sprite);
 
         for(auto& row : pellets) {
