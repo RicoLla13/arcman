@@ -28,7 +28,6 @@ void Player::update(float delta_time) {
 
     if(this->nodeOvershoot()) {
         if(this->current_node != this->target_node) {
-            std::cout << "Node overshoot" << std::endl;
             this->stop();
             this->setPosition(this->target_node->getPosition());
 

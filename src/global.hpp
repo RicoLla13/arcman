@@ -2,6 +2,8 @@
 
 #include <string>
 #include <iostream>
+#include <cstdlib>
+#include <time.h>
 
 constexpr int frame_rate = 60;
 constexpr float sprite_scale = 3.5f;

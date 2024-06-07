@@ -3,6 +3,7 @@
 Game::Game() {
     this->create(sf::VideoMode(window_width, window_height), window_title);
     this->setFramerateLimit(frame_rate);
+    srand(static_cast<unsigned int>(time(0)));
 }
 
 Game::~Game() {

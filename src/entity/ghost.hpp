@@ -10,6 +10,8 @@ class Ghost : public Entity {
     private:
         GhostName identifier;
 
+        Direction getNewDirection();
+
     public:
         Ghost(Node* start_node, const sf::Texture& texture, float speed, GhostName identifier);
 
