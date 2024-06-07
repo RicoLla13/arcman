@@ -7,6 +7,7 @@
 #include "../entity/moving/ghost.hpp"
 #include "../entity/static/static_entity.hpp"
 #include "../entity/static/small_pellet.hpp"
+#include "../entity/static/big_pellet.hpp"
 #include "../exception/custom_exception.hpp"
 
 #include <SFML/Graphics.hpp>
@@ -36,6 +37,7 @@ class Game : public sf::RenderWindow {
 
         int init_pellet_num;
         int pellet_num = 0;
+        float player_timer = 0;
         
         sf::Clock clock;
         GameState current_state = GameState::INIT;

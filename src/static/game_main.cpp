@@ -69,21 +69,37 @@ void Game::checkPellets() {
 
     if(player->collide(pellet0)) {
         pellet0->is_eaten = true;
+
+        if(BigPellet* big_pellet = dynamic_cast<BigPellet*>(pellet0))
+            player_timer -= big_pellet_bonus;
+
         pellet_num--;
     }
 
     if(player->collide(pellet1)) {
         pellet1->is_eaten = true;
+
+        if(BigPellet* big_pellet = dynamic_cast<BigPellet*>(pellet1))
+            player_timer -= big_pellet_bonus;
+
         pellet_num--;
     }
 
     if(player->collide(pellet2)) {
         pellet2->is_eaten = true;
+
+        if(BigPellet* big_pellet = dynamic_cast<BigPellet*>(pellet2))
+            player_timer -= big_pellet_bonus;
+
         pellet_num--;
     }
 
     if(player->collide(pellet3)) {
         pellet3->is_eaten = true;
+
+        if(BigPellet* big_pellet = dynamic_cast<BigPellet*>(pellet3))
+            player_timer -= big_pellet_bonus;
+
         pellet_num--;
     }
 }
@@ -151,22 +167,21 @@ void Game::loadTextures() {
 }
 
 void Game::initPellets() {
-    // make me a std::array with strings so i can represent my level
     std::array<std::string, tile_grid_height> level = {
         "123456789ABCDEF",
         "2--------------",
         "3--------------",
         "4******-******-",
         "5*----*-*----*-",
-        "6*----***----*-",
+        "6*----*#*----*-",
         "7******-******-",
         "8---*-----*----",
-        "9---*******----",
+        "9---***#***----",
         "0---*-----*----",
         "1---*-----*----",
         "2---*-----*----",
         "3******-******-",
-        "4*--*-***-*--*-",
+        "4*--*-*#*-*--*-",
         "5*--*-*-*-*--*-",
         "6******-******-",
         "7--------------",
@@ -175,12 +190,19 @@ void Game::initPellets() {
 
     for(int i = 0; i < tile_grid_height; i++) {
         for(int j = 0; j < tile_grid_width; j++) {
-            if(level[i][j] == '*') {
-                pellets[i][j] = new SmallPellet(sf::Vector2f(j * rect_size, i * rect_size), pellet_texture);
-                pellet_num++;
+            switch(level[i][j]) {
+                case '*':
+                    pellets[i][j] = new SmallPellet(sf::Vector2f(j * rect_size, i * rect_size), pellet_texture);
+                    pellet_num++;
+                    break;
+                case '#':
+                    pellets[i][j] = new BigPellet(sf::Vector2f(j * rect_size, i * rect_size), pellet_texture);
+                    pellet_num++;
+                    break;
+                default:
+                    pellets[i][j] = nullptr;
+                    break;
             }
-            else
-                pellets[i][j] = nullptr;
         }
     }
 
@@ -268,7 +290,7 @@ void Game::loop() {
     }
 
     float delta_time = 0.0f;
-    float player_timer = 0.0f;
+    player_timer = 0.0f;
     clock.restart();
 
     while(this->isOpen()) {
