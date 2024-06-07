@@ -74,7 +74,7 @@ void Game::loadTextures() {
     if(!menu_texture.loadFromFile("assets/Menu.png"))
         throw CustomException("[!] #loadTextures()# -> Menu image not found!");
     if(!button_texture.loadFromFile("assets/Buttons.png"))
-        throw CustomException("[!] #loadTextures()# -> Menu image not found!");
+        throw CustomException("[!] #loadTextures()# -> Buttons image not found!");
 }
 
 void Game::drawNodes() {
@@ -166,15 +166,15 @@ void Game::loop() {
     player.setScale(sprite_scale, sprite_scale);
     player.setTextureOffset(0, 3);
 
-    Ghost python(nodes[22], ghost_texture, ghost_speed, 0);
+    Ghost python(nodes[22], ghost_texture, ghost_speed, GhostName::PYTHON);
     python.setScale(sprite_scale, sprite_scale);
     python.setTextureOffset(0, 4);
 
-    Ghost c_ghost(nodes[23], ghost_texture, ghost_speed, 1);
+    Ghost c_ghost(nodes[23], ghost_texture, ghost_speed, GhostName::C);
     c_ghost.setScale(sprite_scale, sprite_scale);
     c_ghost.setTextureOffset(2, 4);
 
-    Ghost vhdl(nodes[24], ghost_texture, ghost_speed, 2);
+    Ghost vhdl(nodes[24], ghost_texture, ghost_speed, GhostName::VHDL);
     vhdl.setScale(sprite_scale, sprite_scale);
     vhdl.setTextureOffset(4, 4);
 
@@ -201,9 +201,9 @@ void Game::loop() {
 
         this->draw(player);
 
-        // this->draw(python);
-        // this->draw(c_ghost);
-        // this->draw(vhdl);
+        this->draw(python);
+        this->draw(c_ghost);
+        this->draw(vhdl);
 
         this->display();
     }

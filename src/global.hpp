@@ -33,4 +33,10 @@ enum class GameState {
     GAME_OVER
 };
 
+enum class GhostName {
+    PYTHON = 0,
+    C = 1,
+    VHDL = 2
+};
+
 bool isOppositeDirection(const Direction& d1, const Direction& d2);
