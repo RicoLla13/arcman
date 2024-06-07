@@ -22,14 +22,17 @@ class Entity : public sf::Sprite {
         float switch_animation_ms = 0.08f;
         int animation_offset = 0;
 
+        virtual void start();
+        virtual void stop();
         void move(float delta_time);
+
+        bool nodeOvershoot() const;
+        Node* getNewTarget() const;
 
     public:
         Entity(Node* start_node, const sf::Texture& texture, float speed);
 
         void setTextureOffset(int x_off, int y_off);
 
-        virtual void start();
-        virtual void stop();
         virtual void update(float delta_time) = 0;
 };
