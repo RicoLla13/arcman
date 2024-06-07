@@ -29,8 +29,12 @@ class Game : public sf::RenderWindow {
         std::vector<Node*> nodes;
         std::vector<Ghost*> ghosts;
         std::vector<sf::Sprite*> timer;
+        std::vector<sf::Sprite*> progression;
         std::array<std::array<StaticEntity*, tile_grid_width>, tile_grid_height> pellets;
         sf::Sprite background;
+        Player* player;
+
+        int pellet_num = 0;
         
         sf::Clock clock;
         GameState current_state = GameState::INIT;
@@ -43,6 +47,7 @@ class Game : public sf::RenderWindow {
 
         void drawNodes();
         void processNum(int num, sf::Sprite* sprite);
+        void checkPellets();
 
         bool handleEvent();
         GameState menu();

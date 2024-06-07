@@ -9,6 +9,11 @@ Game::Game() {
 Game::~Game() {
     this->close();
 
+    if(player != nullptr)
+        delete player;
+    
+    player = nullptr;
+
     for(auto node : nodes) {
         if(node != nullptr)
             delete node;
@@ -46,6 +51,35 @@ Game& Game::getInstance() {
 
 void Game::processNum(int num, sf::Sprite* sprite) {
     sprite->setTextureRect(sf::IntRect((num % 5) * sprite_size, num / 5 * sprite_size, sprite_size, sprite_size));
+}
+
+void Game::checkPellets() {
+    sf::Vector2f player_pos = player->getPosition();
+
+    StaticEntity* pellet0 = pellets[static_cast<int>(ceil(player_pos.y / rect_size))][static_cast<int>(ceil(player_pos.x / rect_size))];
+    StaticEntity* pellet1 = pellets[static_cast<int>(ceil(player_pos.y / rect_size) + 1)][static_cast<int>(ceil(player_pos.x / rect_size))];
+    StaticEntity* pellet2 = pellets[static_cast<int>(ceil(player_pos.y / rect_size))][static_cast<int>(ceil(player_pos.x / rect_size) + 1)];
+    StaticEntity* pellet3 = pellets[static_cast<int>(ceil(player_pos.y / rect_size) + 1)][static_cast<int>(floor(player_pos.x / rect_size) + 1)];
+
+    if(player->collide(pellet0)) {
+        pellet0->is_eaten = true;
+        pellet_num--;
+    }
+
+    if(player->collide(pellet1)) {
+        pellet1->is_eaten = true;
+        pellet_num--;
+    }
+
+    if(player->collide(pellet2)) {
+        pellet2->is_eaten = true;
+        pellet_num--;
+    }
+
+    if(player->collide(pellet3)) {
+        pellet3->is_eaten = true;
+        pellet_num--;
+    }
 }
 
 void Game::stateMachine() {
@@ -117,26 +151,28 @@ void Game::initPellets() {
         "2--------------",
         "3--------------",
         "4******-******-",
-        "5--------------",
-        "6--------------",
-        "7--------------",
-        "8--------------",
-        "9--------------",
-        "0--------------",
-        "1--------------",
-        "2--------------",
-        "3--------------",
-        "4--------------",
-        "5--------------",
-        "6--------------",
+        "5*----*-*----*-",
+        "6*----***----*-",
+        "7******-******-",
+        "8---*-----*----",
+        "9---*******----",
+        "0---*-----*----",
+        "1---*-----*----",
+        "2---*-----*----",
+        "3******-******-",
+        "4*--*-***-*--*-",
+        "5*--*-*-*-*--*-",
+        "6******-******-",
         "7--------------",
         "8--------------"
     };
 
     for(int i = 0; i < tile_grid_height; i++) {
         for(int j = 0; j < tile_grid_width; j++) {
-            if(level[i][j] == '*')
+            if(level[i][j] == '*') {
                 pellets[i][j] = new SmallPellet(sf::Vector2f(j * rect_size, i * rect_size), pellet_texture);
+                pellet_num++;
+            }
             else
                 pellets[i][j] = nullptr;
         }
@@ -205,9 +241,8 @@ void Game::loop() {
         timer[i]->setPosition(i * rect_size, rect_size);
     }
 
-    Player player(nodes[0], player_texture, player_speed);
-    player.setScale(sprite_scale, sprite_scale);
-    player.setTextureOffset(0, 3);
+    player = new Player(nodes[0], player_texture, player_speed);
+    player->setTextureOffset(0, 3);
 
     ghosts.push_back(new Ghost(nodes[22], ghost_texture, ghost_speed, GhostName::PYTHON));
     ghosts.push_back(new Ghost(nodes[23], ghost_texture, ghost_speed, GhostName::C));
@@ -228,7 +263,7 @@ void Game::loop() {
         delta_time = clock.restart().asSeconds();
         player_timer += delta_time;
 
-        player.update(delta_time);
+        player->update(delta_time);
         for(auto ghost : ghosts)
             ghost->update(delta_time);
 
@@ -238,10 +273,7 @@ void Game::loop() {
             seconds /= 10;
         }
 
-        // for(auto pellet : pellets) {
-        //     if(player.collide(pellet))
-        //         pellet->is_eaten = true;
-        // }
+        this->checkPellets();
 
         this->clear();
 
@@ -252,18 +284,20 @@ void Game::loop() {
 
         for(auto& row : pellets) {
             for(auto pellet : row)
-                if(pellet != nullptr)
+                if(pellet != nullptr && !pellet->is_eaten)
                     this->draw(*pellet);
         }
 
-        this->draw(player);
+        this->draw(*player);
 
         for(auto ghost : ghosts)
             this->draw(*ghost);
 
         this->display();
 
-        if(player.collideGhosts(ghosts))
+        std::cout << "pellet num: " << pellet_num << std::endl;
+
+        if(player->collideGhosts(ghosts))
             break;
     }
 }
