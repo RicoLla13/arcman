@@ -207,6 +207,7 @@ void Game::loop() {
 
     float delta_time = 0.0f;
     float player_timer = 0.0f;
+    clock.restart();
 
     while(this->isOpen()) {
         if(this->handleEvent())
@@ -243,10 +244,7 @@ void Game::loop() {
 
         if(player.collideGhosts(ghosts))
             break;
-
     }
-
-    std::cout << "Player timer: " << player_timer << std::endl;
 }
 
 void Game::gameOver() {
