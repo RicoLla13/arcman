@@ -22,12 +22,22 @@ Game::~Game() {
         ghost = nullptr;
     }
 
+    for(auto sprite : timer) {
+        if(sprite != nullptr)
+            delete sprite;
+        sprite = nullptr;
+    }
+
     std::cout << "[*] Game instance destroyed!" << std::endl;
 }
 
 Game& Game::getInstance() {
     static Game instance;
     return instance;
+}
+
+void Game::processNum(int num, sf::Sprite* sprite) {
+    sprite->setTextureRect(sf::IntRect((num % 5) * sprite_size, num / 5 * sprite_size, sprite_size, sprite_size));
 }
 
 void Game::stateMachine() {
@@ -85,6 +95,8 @@ void Game::loadTextures() {
         throw CustomException("[!] #loadTextures()# -> Buttons image not found!");
     if(!game_over_texture.loadFromFile("assets/Game_Over.png"))
         throw CustomException("[!] #loadTextures()# -> Game Over image not found!");
+    if(!numbers_texture.loadFromFile("assets/Numbers.png"))
+        throw CustomException("[!] #loadTextures()# -> Numbers image not found!");
 }
 
 void Game::drawNodes() {
@@ -172,6 +184,15 @@ void Game::loop() {
     sf::Sprite background(maze_texture);
     background.setScale(sprite_scale, sprite_scale);
 
+    timer.push_back(new sf::Sprite(numbers_texture));
+    timer.push_back(new sf::Sprite(numbers_texture));
+    timer.push_back(new sf::Sprite(numbers_texture));
+
+    for(int i = 0; i < timer.size(); i++) {
+        timer[i]->setScale(sprite_scale, sprite_scale);
+        timer[i]->setPosition(i * rect_size, rect_size);
+    }
+
     Player player(nodes[0], player_texture, player_speed);
     player.setScale(sprite_scale, sprite_scale);
     player.setTextureOffset(0, 3);
@@ -198,9 +219,18 @@ void Game::loop() {
         for(auto ghost : ghosts)
             ghost->update(delta_time);
 
+        int seconds = static_cast<int>(player_timer);
+        for(int i = timer.size() - 1; i >=0; i--) {
+            processNum(seconds % 10, timer[i]);
+            seconds /= 10;
+        }
+
         this->clear();
 
         this->draw(background);
+
+        for(auto sprite : timer)
+            this->draw(*sprite);
 
         // this->drawNodes();
 

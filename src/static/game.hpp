@@ -20,8 +20,10 @@ class Game : public sf::RenderWindow {
         sf::Texture menu_texture;
         sf::Texture game_over_texture;
         sf::Texture button_texture;
+        sf::Texture numbers_texture;
         std::vector<Node*> nodes;
         std::vector<Ghost*> ghosts;
+        std::vector<sf::Sprite*> timer;
         
         sf::Clock clock;
         GameState current_state = GameState::INIT;
@@ -35,6 +37,7 @@ class Game : public sf::RenderWindow {
         void loop();
         void gameOver();
         void loadTextures();
+        void processNum(int num, sf::Sprite* sprite);
 
     public:
         static Game& getInstance();
