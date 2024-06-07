@@ -11,6 +11,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <array>
 
 class Game : public sf::RenderWindow {
     private:
@@ -28,7 +29,7 @@ class Game : public sf::RenderWindow {
         std::vector<Node*> nodes;
         std::vector<Ghost*> ghosts;
         std::vector<sf::Sprite*> timer;
-        std::vector<StaticEntity*> pellets;
+        std::array<std::array<StaticEntity*, tile_grid_width>, tile_grid_height> pellets;
         sf::Sprite background;
         
         sf::Clock clock;
@@ -37,6 +38,7 @@ class Game : public sf::RenderWindow {
         Game();
 
         void initNodes();
+        void initPellets();
         void loadTextures();
 
         void drawNodes();

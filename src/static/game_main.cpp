@@ -28,10 +28,12 @@ Game::~Game() {
         sprite = nullptr;
     }
 
-    for(auto pellet : pellets) {
-        if(pellet != nullptr)
-            delete pellet;
-        pellet = nullptr;
+    for(auto& row : pellets) {
+        for(auto pellet : row) {
+            if(pellet != nullptr)
+                delete pellet;
+            pellet = nullptr;
+        }
     }
 
     std::cout << "[*] Game instance destroyed!" << std::endl;
@@ -58,6 +60,7 @@ void Game::stateMachine() {
                     return;
                 }
                 this->initNodes();
+                this->initPellets();
                 current_state = GameState::MENU;
                 break;
             case GameState::MENU:
@@ -105,6 +108,39 @@ void Game::loadTextures() {
         throw CustomException("[!] #loadTextures()# -> Numbers image not found!");
     if(!pellet_texture.loadFromFile("assets/Pellet.png"))
         throw CustomException("[!] #loadTextures()# -> Pellet image not found!");
+}
+
+void Game::initPellets() {
+    // make me a std::array with strings so i can represent my level
+    std::array<std::string, tile_grid_height> level = {
+        "123456789ABCDEF",
+        "2--------------",
+        "3--------------",
+        "4******-******-",
+        "5--------------",
+        "6--------------",
+        "7--------------",
+        "8--------------",
+        "9--------------",
+        "0--------------",
+        "1--------------",
+        "2--------------",
+        "3--------------",
+        "4--------------",
+        "5--------------",
+        "6--------------",
+        "7--------------",
+        "8--------------"
+    };
+
+    for(int i = 0; i < tile_grid_height; i++) {
+        for(int j = 0; j < tile_grid_width; j++) {
+            if(level[i][j] == '*')
+                pellets[i][j] = new SmallPellet(sf::Vector2f(j * rect_size, i * rect_size), pellet_texture);
+            else
+                pellets[i][j] = nullptr;
+        }
+    }
 }
 
 GameState Game::menu() {
@@ -164,11 +200,6 @@ void Game::loop() {
     timer.push_back(new sf::Sprite(numbers_texture));
     timer.push_back(new sf::Sprite(numbers_texture));
 
-    pellets.push_back(new SmallPellet(sf::Vector2f(6 * rect_size, 3 * rect_size), pellet_texture));
-    pellets.push_back(new SmallPellet(sf::Vector2f(5 * rect_size, 3 * rect_size), pellet_texture));
-    pellets.push_back(new SmallPellet(sf::Vector2f(4 * rect_size, 3 * rect_size), pellet_texture));
-    pellets.push_back(new SmallPellet(sf::Vector2f(3 * rect_size, 3 * rect_size), pellet_texture));
-
     for(int i = 0; i < timer.size(); i++) {
         timer[i]->setScale(sprite_scale, sprite_scale);
         timer[i]->setPosition(i * rect_size, rect_size);
@@ -207,10 +238,10 @@ void Game::loop() {
             seconds /= 10;
         }
 
-        for(auto pellet : pellets) {
-            if(player.collide(pellet))
-                pellet->is_eaten = true;
-        }
+        // for(auto pellet : pellets) {
+        //     if(player.collide(pellet))
+        //         pellet->is_eaten = true;
+        // }
 
         this->clear();
 
@@ -219,12 +250,13 @@ void Game::loop() {
         for(auto sprite : timer)
             this->draw(*sprite);
 
-        this->draw(player);
-
-        for(auto pellet : pellets) {
-            if(!pellet->is_eaten)
-                this->draw(*pellet);
+        for(auto& row : pellets) {
+            for(auto pellet : row)
+                if(pellet != nullptr)
+                    this->draw(*pellet);
         }
+
+        this->draw(player);
 
         for(auto ghost : ghosts)
             this->draw(*ghost);
