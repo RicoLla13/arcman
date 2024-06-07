@@ -1,7 +1,6 @@
 #include "game.hpp"
 
-void Game::setupTestNodes() {
-    // define some test nodes
+void Game::initNodes() {
     nodes.push_back(new Node(1 * rect_size, 3 * rect_size));   // node A 0
     nodes.push_back(new Node(6 * rect_size, 3 * rect_size));   // node B 1
     nodes.push_back(new Node(8 * rect_size, 3 * rect_size));   // node C 2
@@ -33,11 +32,11 @@ void Game::setupTestNodes() {
 
     // define node connections
     // node A
-    nodes[0]->setNeighbour(Direction::RIGHT, nodes[1]);
-    nodes[0]->setNeighbour(Direction::DOWN, nodes[6]);
+    nodes[0]->setNeighbour(Direction::RIGHT, nodes[1]);     // node B
+    nodes[0]->setNeighbour(Direction::DOWN, nodes[6]);      // node G
     // node B
-    nodes[1]->setNeighbour(Direction::LEFT, nodes[0]);
-    nodes[1]->setNeighbour(Direction::DOWN, nodes[4]);
+    nodes[1]->setNeighbour(Direction::LEFT, nodes[0]);      // node A
+    nodes[1]->setNeighbour(Direction::DOWN, nodes[4]);      // node E
     // node C
     nodes[2]->setNeighbour(Direction::RIGHT, nodes[3]);
     nodes[2]->setNeighbour(Direction::DOWN, nodes[5]);
@@ -130,4 +129,36 @@ void Game::setupTestNodes() {
     // node Beta
     nodes[27]->setNeighbour(Direction::UP, nodes[19]);
     nodes[27]->setNeighbour(Direction::LEFT, nodes[26]);
+}
+
+void Game::drawNodes() {
+    // for each node draw a red circle with radius 20
+    for(auto node : nodes) {
+        if(node == nullptr)
+            throw CustomException("[!] #gameLoop()# -> A node in node vector is null!");
+
+        sf::CircleShape circle(20);
+        circle.setFillColor(sf::Color::Blue);
+        circle.setPosition(node->getPosition());
+        this->draw(circle);
+
+        // draw connections
+        for(auto neighbor : node->getAllNeighbours()) {
+            if(neighbor == nullptr)
+                continue;
+
+            // Calculate the positions of the nodes
+            sf::Vector2f startPos = node->getPosition() + sf::Vector2f(20, 20); // Start of the line (center of the node)
+            sf::Vector2f endPos = neighbor->getPosition() + sf::Vector2f(20, 20); // End of the line (center of the connected node)
+
+            // Create line vertices
+            sf::Vertex line[] = {
+                sf::Vertex(startPos),
+                sf::Vertex(endPos)
+            };
+
+            // Draw the line
+            this->draw(line, 2, sf::Lines);
+        }
+    }
 }

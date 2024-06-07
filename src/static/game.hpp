@@ -21,23 +21,27 @@ class Game : public sf::RenderWindow {
         sf::Texture game_over_texture;
         sf::Texture button_texture;
         sf::Texture numbers_texture;
+
         std::vector<Node*> nodes;
         std::vector<Ghost*> ghosts;
         std::vector<sf::Sprite*> timer;
+        sf::Sprite background;
         
         sf::Clock clock;
         GameState current_state = GameState::INIT;
 
         Game();
 
+        void initNodes();
+        void loadTextures();
+
         void drawNodes();
-        void setupTestNodes();
+        void processNum(int num, sf::Sprite* sprite);
+
         bool handleEvent();
         GameState menu();
         void loop();
         void gameOver();
-        void loadTextures();
-        void processNum(int num, sf::Sprite* sprite);
 
     public:
         static Game& getInstance();
