@@ -8,25 +8,6 @@ Player::Player(Node* start_node, const sf::Texture& texture, float speed)
     this->start();
 }
 
-void Player::updateDirectionQueue() {
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-        if(key_presses.empty() || key_presses.back() != Direction::UP)
-            key_presses.push(Direction::UP);
-    }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-        if(key_presses.empty() || key_presses.back() != Direction::DOWN)
-            key_presses.push(Direction::DOWN);
-    }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        if(key_presses.empty() || key_presses.back() != Direction::LEFT)
-            key_presses.push(Direction::LEFT);
-    }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-        if(key_presses.empty() || key_presses.back() != Direction::RIGHT)
-            key_presses.push(Direction::RIGHT);
-    }
-}
-
 Direction Player::getInput() {
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
         return Direction::UP;
@@ -41,12 +22,9 @@ Direction Player::getInput() {
 }
 
 void Player::update(float delta_time) {
-    // this->updateDirectionQueue();
     this->target_node = this->getNewTarget();
 
     Direction local_direction = this->getInput();
-
-    // std::cout << "current_node: " << (current_node == nullptr) << " target_node: " << (target_node == nullptr) << std::endl;
 
     if(this->nodeOvershoot()) {
         if(this->current_node != this->target_node) {
