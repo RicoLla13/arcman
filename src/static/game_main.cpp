@@ -185,19 +185,19 @@ void Game::loop() {
     }
 
     float delta_time = 0.0f;
+    float player_timer = 0.0f;
 
-    while (this->isOpen()) {
+    while(this->isOpen()) {
         if(this->handleEvent())
             break;
 
-        // calculate delta time
         delta_time = clock.restart().asSeconds();
+        player_timer += delta_time;
 
         player.update(delta_time);
         for(auto ghost : ghosts)
             ghost->update(delta_time);
 
-        // clear window
         this->clear();
 
         this->draw(background);
@@ -215,6 +215,8 @@ void Game::loop() {
             break;
 
     }
+
+    std::cout << "Player timer: " << player_timer << std::endl;
 }
 
 void Game::gameOver() {

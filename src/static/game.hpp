@@ -24,7 +24,6 @@ class Game : public sf::RenderWindow {
         std::vector<Ghost*> ghosts;
         
         sf::Clock clock;
-
         GameState current_state = GameState::INIT;
 
         Game();
