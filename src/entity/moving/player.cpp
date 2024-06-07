@@ -1,7 +1,7 @@
 #include "player.hpp"
 
 Player::Player(Node* start_node, const sf::Texture& texture, float speed) 
-    : Entity(start_node, texture, speed) 
+    : MovingEntity(start_node, texture, speed) 
 {
     this->direction = Direction::RIGHT;
     this->target_node = this->current_node->getNeighbour(this->direction);
@@ -28,6 +28,23 @@ bool Player::collideGhosts(const std::vector<Ghost*> ghosts) {
     }
 
     return false;
+}
+
+bool Player::collide(StaticEntity* entity) {
+    if(entity == nullptr)
+        return false;
+    if(entity->is_eaten)
+        return false;
+    
+    sf::Vector2f entity_position = entity->getPosition();
+    sf::Vector2f player_position = this->getPosition();
+
+    bool res = false;
+    if(abs(entity_position.x - player_position.x) < eat_error &&
+        abs(entity_position.y - player_position.y) < eat_error)
+        res = true;
+
+    return res;
 }
 
 void Player::update(float delta_time) {

@@ -1,11 +1,10 @@
 #pragma once
 
-#include "entity.hpp"
+#include "../static/static_entity.hpp"
+#include "moving_entity.hpp"
 #include "ghost.hpp"
-#include "../node/node.hpp"
 
-
-class Player : public Entity {
+class Player : public MovingEntity {
     private:
         Direction getInput();
         
@@ -13,5 +12,6 @@ class Player : public Entity {
         Player(Node* start_node, const sf::Texture& texture, float speed);
 
         void update(float delta_time) override;
+        bool collide(StaticEntity* entity);
         bool collideGhosts(const std::vector<Ghost*> ghosts);
 };

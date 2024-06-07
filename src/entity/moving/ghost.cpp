@@ -1,7 +1,7 @@
 #include "ghost.hpp"
 
 Ghost::Ghost(Node* start_node, const sf::Texture& texture, float speed, GhostName identifier)
-    : Entity(start_node, texture, speed), identifier(identifier)
+    : MovingEntity(start_node, texture, speed), identifier(identifier)
 {
     this->direction = this->getNewDirection();
     this->speed_norm = ghost_speed;

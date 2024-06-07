@@ -1,12 +1,8 @@
 #pragma once
 
-#include "entity.hpp"
-#include "../node/node.hpp"
-#include "../global.hpp"
+#include "moving_entity.hpp"
 
-#include <iostream>
-
-class Ghost : public Entity {
+class Ghost : public MovingEntity {
     private:
         GhostName identifier;
 

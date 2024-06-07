@@ -3,8 +3,10 @@
 #include "../global.hpp"
 #include "../node/node.hpp"
 #include "../entity/entity.hpp"
-#include "../entity/player.hpp"
-#include "../entity/ghost.hpp"
+#include "../entity/moving/player.hpp"
+#include "../entity/moving/ghost.hpp"
+#include "../entity/static/static_entity.hpp"
+#include "../entity/static/small_pellet.hpp"
 #include "../exception/custom_exception.hpp"
 
 #include <SFML/Graphics.hpp>
@@ -21,10 +23,12 @@ class Game : public sf::RenderWindow {
         sf::Texture game_over_texture;
         sf::Texture button_texture;
         sf::Texture numbers_texture;
+        sf::Texture pellet_texture;
 
         std::vector<Node*> nodes;
         std::vector<Ghost*> ghosts;
         std::vector<sf::Sprite*> timer;
+        std::vector<StaticEntity*> pellets;
         sf::Sprite background;
         
         sf::Clock clock;

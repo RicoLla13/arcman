@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <time.h>
 
+#include <SFML/Graphics.hpp>
+
 constexpr int frame_rate = 60;
 constexpr float sprite_scale = 3.5f;
 constexpr int sprite_size = 16;
@@ -18,6 +20,7 @@ constexpr int window_height = tile_grid_height * sprite_size * sprite_scale;
 
 constexpr float player_speed = 250.0f;
 constexpr float ghost_speed = 100.0f;
+constexpr float eat_error = 1.5f;
 
 enum class Direction {
     UP = 0,
