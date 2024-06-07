@@ -21,6 +21,15 @@ Direction Player::getInput() {
     return this->direction;
 }
 
+bool Player::collideGhosts(const std::vector<Ghost*> ghosts) {
+    for(auto ghost : ghosts) {
+        if(this->getGlobalBounds().intersects(ghost->getGlobalBounds()))
+            return true;
+    }
+
+    return false;
+}
+
 void Player::update(float delta_time) {
     this->target_node = this->getNewTarget();
 

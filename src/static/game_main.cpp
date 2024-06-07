@@ -170,17 +170,14 @@ void Game::loop() {
     player.setScale(sprite_scale, sprite_scale);
     player.setTextureOffset(0, 3);
 
-    Ghost python(nodes[22], ghost_texture, ghost_speed, GhostName::PYTHON);
-    python.setScale(sprite_scale, sprite_scale);
-    python.setTextureOffset(0, 4);
-
-    Ghost c_ghost(nodes[23], ghost_texture, ghost_speed, GhostName::C);
-    c_ghost.setScale(sprite_scale, sprite_scale);
-    c_ghost.setTextureOffset(2, 4);
-
-    Ghost vhdl(nodes[24], ghost_texture, ghost_speed, GhostName::VHDL);
-    vhdl.setScale(sprite_scale, sprite_scale);
-    vhdl.setTextureOffset(4, 4);
+    std::vector<Ghost*> ghosts;
+    ghosts.push_back(new Ghost(nodes[22], ghost_texture, ghost_speed, GhostName::PYTHON));
+    ghosts.push_back(new Ghost(nodes[23], ghost_texture, ghost_speed, GhostName::C));
+    ghosts.push_back(new Ghost(nodes[24], ghost_texture, ghost_speed, GhostName::VHDL));
+    for(int i = 0; i < ghosts.size(); i++) {
+        ghosts[i]->setScale(sprite_scale, sprite_scale);
+        ghosts[i]->setTextureOffset(2 * i, 4);
+    }
 
     float delta_time = 0.0f;
 
@@ -192,9 +189,8 @@ void Game::loop() {
         delta_time = clock.restart().asSeconds();
 
         player.update(delta_time);
-        python.update(delta_time);
-        c_ghost.update(delta_time);
-        vhdl.update(delta_time);
+        for(auto ghost : ghosts)
+            ghost->update(delta_time);
 
         // clear window
         this->clear();
@@ -205,15 +201,12 @@ void Game::loop() {
 
         this->draw(player);
 
-        this->draw(python);
-        this->draw(c_ghost);
-        this->draw(vhdl);
+        for(auto ghost : ghosts)
+            this->draw(*ghost);
 
         this->display();
 
-        if(player.getGlobalBounds().intersects(python.getGlobalBounds()) ||
-            player.getGlobalBounds().intersects(c_ghost.getGlobalBounds()) ||
-            player.getGlobalBounds().intersects(vhdl.getGlobalBounds()))
+        if(player.collideGhosts(ghosts))
             break;
 
     }
