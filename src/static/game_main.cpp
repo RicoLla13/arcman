@@ -317,8 +317,6 @@ void Game::loop() {
 
         this->display();
 
-        std::cout << "pellet num: " << pellet_num << std::endl;
-
         if(player->collideGhosts(ghosts))
             break;
     }

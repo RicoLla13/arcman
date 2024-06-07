@@ -21,6 +21,7 @@ constexpr int window_height = tile_grid_height * sprite_size * sprite_scale;
 constexpr float player_speed = 250.0f;
 constexpr float ghost_speed = 100.0f;
 constexpr float eat_error = 5.0f;
+constexpr float ghost_error = 25.0f;
 
 enum class Direction {
     UP = 0,

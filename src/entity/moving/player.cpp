@@ -23,7 +23,11 @@ Direction Player::getInput() {
 
 bool Player::collideGhosts(const std::vector<Ghost*> ghosts) {
     for(auto ghost : ghosts) {
-        if(this->getGlobalBounds().intersects(ghost->getGlobalBounds()))
+        sf::Vector2f ghost_position = ghost->getPosition();
+        sf::Vector2f player_position = this->getPosition();
+
+        if(abs(ghost_position.x - player_position.x) < ghost_error &&
+            abs(ghost_position.y - player_position.y) < ghost_error)
             return true;
     }
 
@@ -39,12 +43,11 @@ bool Player::collide(StaticEntity* entity) {
     sf::Vector2f entity_position = entity->getPosition();
     sf::Vector2f player_position = this->getPosition();
 
-    bool res = false;
     if(abs(entity_position.x - player_position.x) < eat_error &&
         abs(entity_position.y - player_position.y) < eat_error)
-        res = true;
+        return true;
 
-    return res;
+    return false;
 }
 
 void Player::update(float delta_time) {
