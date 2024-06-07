@@ -18,6 +18,7 @@ class Game : public sf::RenderWindow {
         sf::Texture ghost_texture;
         sf::Texture maze_texture;
         sf::Texture menu_texture;
+        sf::Texture game_over_texture;
         sf::Texture button_texture;
         std::vector<Node*> nodes;
         

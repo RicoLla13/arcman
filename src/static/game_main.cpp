@@ -43,10 +43,11 @@ void Game::stateMachine() {
                 break;
             case GameState::RUN:
                 this->loop();
-                current_state = GameState::CLOSE;
+                current_state = GameState::GAME_OVER;
                 break;
             case GameState::GAME_OVER:
                 this->gameOver();
+                current_state = GameState::CLOSE;
                 break;
             default:
                 stop = true;
@@ -76,6 +77,8 @@ void Game::loadTextures() {
         throw CustomException("[!] #loadTextures()# -> Menu image not found!");
     if(!button_texture.loadFromFile("assets/Buttons.png"))
         throw CustomException("[!] #loadTextures()# -> Buttons image not found!");
+    if(!game_over_texture.loadFromFile("assets/Game_Over.png"))
+        throw CustomException("[!] #loadTextures()# -> Game Over image not found!");
 }
 
 void Game::drawNodes() {
@@ -207,7 +210,25 @@ void Game::loop() {
         this->draw(vhdl);
 
         this->display();
+
+        if(player.getGlobalBounds().intersects(python.getGlobalBounds()) ||
+            player.getGlobalBounds().intersects(c_ghost.getGlobalBounds()) ||
+            player.getGlobalBounds().intersects(vhdl.getGlobalBounds()))
+            break;
+
     }
 }
 
-void Game::gameOver() {}
+void Game::gameOver() {
+    sf::Sprite background(game_over_texture);
+    background.setScale(sprite_scale, sprite_scale);
+
+    while(this->isOpen()) {
+        if(this->handleEvent())
+            break;
+
+        this->clear();
+        this->draw(background);
+        this->display();
+    }
+}
