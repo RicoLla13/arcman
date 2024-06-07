@@ -16,6 +16,12 @@ Game::~Game() {
         node = nullptr;
     }
 
+    for(auto ghost : ghosts) {
+        if(ghost != nullptr)
+            delete ghost;
+        ghost = nullptr;
+    }
+
     std::cout << "[*] Game instance destroyed!" << std::endl;
 }
 
@@ -170,7 +176,6 @@ void Game::loop() {
     player.setScale(sprite_scale, sprite_scale);
     player.setTextureOffset(0, 3);
 
-    std::vector<Ghost*> ghosts;
     ghosts.push_back(new Ghost(nodes[22], ghost_texture, ghost_speed, GhostName::PYTHON));
     ghosts.push_back(new Ghost(nodes[23], ghost_texture, ghost_speed, GhostName::C));
     ghosts.push_back(new Ghost(nodes[24], ghost_texture, ghost_speed, GhostName::VHDL));

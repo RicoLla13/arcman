@@ -21,6 +21,7 @@ class Game : public sf::RenderWindow {
         sf::Texture game_over_texture;
         sf::Texture button_texture;
         std::vector<Node*> nodes;
+        std::vector<Ghost*> ghosts;
         
         sf::Clock clock;
 
