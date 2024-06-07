@@ -11,7 +11,6 @@ class Node {
     private:
         sf::Vector2f position;
         std::vector<Node*> neighbors;
-        std::vector<int> weights;
 
     public:
         Node(const sf::Vector2f& position);
@@ -23,7 +22,6 @@ class Node {
         void setPosition(const sf::Vector2f& position) { this->position = position; }
 
         Node* getNeighbour(const Direction& direction) const;
-        int getWeight(const Direction& direction) const { return weights[static_cast<int>(direction)]; }
         std::vector<Node*> getAllNeighbours() const { return neighbors; }
 
         sf::Vector2f getPosition() const { return position; }
