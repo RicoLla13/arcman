@@ -5,7 +5,7 @@
 int main() {
     Game& game = Game::getInstance();
 
-    game.state_machine();
+    game.stateMachine();
 
     return 0;
 }

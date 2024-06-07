@@ -42,5 +42,5 @@ class Game : public sf::RenderWindow {
         void operator=(Game const&) = delete;
         ~Game();
 
-        void state_machine();
+        void stateMachine();
 };

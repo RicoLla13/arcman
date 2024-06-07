@@ -24,7 +24,7 @@ Game& Game::getInstance() {
     return instance;
 }
 
-void Game::state_machine() {
+void Game::stateMachine() {
     bool stop = false;
     while(!stop) {
         switch(this->current_state) {
