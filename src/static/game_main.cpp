@@ -3,7 +3,6 @@
 Game::Game() {
     this->create(sf::VideoMode(window_width, window_height), window_title);
     this->setFramerateLimit(frame_rate);
-    this->setKeyRepeatEnabled(false);
     srand(static_cast<unsigned int>(time(0)));
 }
 
@@ -12,13 +11,11 @@ Game::~Game() {
 
     if(player != nullptr)
         delete player;
-    
     player = nullptr;
 
     for(auto node : nodes) {
         if(node != nullptr)
             delete node;
-
         node = nullptr;
     }
 
@@ -93,18 +90,21 @@ void Game::stateMachine() {
                     std::cerr << e.what() << std::endl;
                     return;
                 }
-                this->initNodes();
-                this->initPellets();
                 current_state = GameState::MENU;
                 break;
             case GameState::MENU:
                 current_state = this->menu();
+                std::cout << "Quit menu succesfully" << std::endl;
                 break;
             case GameState::RUN:
+                this->initNodes();
+                this->initPellets();
                 current_state = this->loop();
+                this->clearLoopObjects();
                 break;
             case GameState::GAME_WON:
-                current_state = this->gameWon();;
+                current_state = this->gameWon();
+                std::cout << "Quit game won succesfully" << std::endl;
                 break;
             case GameState::GAME_OVER:
                 this->gameOver();
@@ -193,47 +193,80 @@ void Game::initPellets() {
 
 GameState Game::menu() {
     background.setTexture(menu_texture);
-    background.setScale(sprite_scale, sprite_scale);
 
-    sf::Sprite button_play(button_texture);
-    button_play.setScale(sprite_scale, sprite_scale);
+    Entity button_play(button_texture);
     button_play.setTextureRect(sf::IntRect(0, sprite_size, 5 * sprite_size , sprite_size));
     button_play.setPosition(5 * rect_size, 8 * rect_size);
 
-    sf::Sprite button_exit(button_texture);
-    button_exit.setScale(sprite_scale, sprite_scale);
+    Entity button_exit(button_texture);
     button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
     button_exit.setPosition(5 * rect_size, 10 * rect_size);
 
-    bool selection = true;
+    ret_was_pressed = true;
+
+    int selection = 0;
     while(this->isOpen()) {
         if(this->handleEvent())
             break;
 
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-            selection = true;
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-            selection = false;
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
-            if(selection)
-                return GameState::RUN;
-            else
+        std::cout << "Before keyboard ifs" << std::endl;
+
+        bool w_is_pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+        bool s_is_pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+        bool ret_is_pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Return);
+
+        if(!w_was_pressed && w_is_pressed) {
+            selection--;
+            if(selection < 0)
+                selection = 1;
+        }
+        if(!s_was_pressed && s_is_pressed) {
+            selection++;
+            if(selection > 1)
+                selection = 0;
+        }
+        if(!ret_was_pressed && ret_is_pressed) {
+            switch(selection) {
+                case 0:
+                    return GameState::RUN;
+                default:
+                    return GameState::CLOSE;
+            }
+        }
+
+        w_was_pressed = w_is_pressed;
+        s_was_pressed = s_is_pressed;
+        ret_was_pressed = ret_is_pressed;
+
+        std::cout << "Before buttons ifs" << std::endl;
+
+        switch(selection) {
+            case 0:
+                button_play.setTextureRect(sf::IntRect(0, sprite_size, 5 * sprite_size , sprite_size));
+                button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
+                break;
+            case 1:
+                button_play.setTextureRect(sf::IntRect(0, 0, 5 * sprite_size , sprite_size));
+                button_exit.setTextureRect(sf::IntRect(0, 3 * sprite_size, 5 * sprite_size , sprite_size));
+                break;
+            default:
+                button_play.setTextureRect(sf::IntRect(0, 0, 5 * sprite_size , sprite_size));
+                button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
                 break;
         }
 
-        if(selection) {
-            button_play.setTextureRect(sf::IntRect(0, sprite_size, 5 * sprite_size , sprite_size));
-            button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
-        }
-        else {
-            button_play.setTextureRect(sf::IntRect(0, 0, 5 * sprite_size , sprite_size));
-            button_exit.setTextureRect(sf::IntRect(0, 3 * sprite_size, 5 * sprite_size , sprite_size));
-        }
+        std::cout << "Modified buttons with ifs" << std::endl;
         
         this->clear();
+        std::cout << "Window cleared!" << std::endl;
+
         this->draw(background);
+        std::cout << "Background drawn!" << std::endl;
         this->draw(button_play);
+        std::cout << "Button play drawn!" << std::endl;
         this->draw(button_exit);
+        std::cout << "Button exit drawn!" << std::endl;
+    
         this->display();
     }
 
@@ -242,7 +275,6 @@ GameState Game::menu() {
 
 GameState Game::loop() {
     background.setTexture(maze_texture);
-    background.setScale(sprite_scale, sprite_scale);
 
     timer.push_back(new sf::Sprite(numbers_texture));
     timer.push_back(new sf::Sprite(numbers_texture));
@@ -333,9 +365,42 @@ GameState Game::loop() {
     return GameState::CLOSE;
 }
 
+void Game::clearLoopObjects() {
+    for(auto node : nodes) {
+        if(node != nullptr)
+            delete node;
+        node = nullptr;
+    }
+    nodes.clear();
+
+    for(auto sprite : timer) {
+        if(sprite != nullptr)
+            delete sprite;
+        sprite = nullptr;
+    }
+    timer.clear();
+    
+    for(auto sprite : progress) {
+        if(sprite != nullptr)
+            delete sprite;
+        sprite = nullptr;
+    }
+    progress.clear();
+
+    for(auto sprite : ghosts) {
+        if(sprite != nullptr)
+            delete sprite;
+        sprite = nullptr;
+    }
+    ghosts.clear();
+
+    if(player != nullptr)
+        delete player;
+    player = nullptr;
+}
+
 GameState Game::gameWon() {
-    sf::Sprite background(game_won_texture);
-    background.setScale(sprite_scale, sprite_scale);
+    background.setTexture(game_won_texture);
 
     Entity button_menu(button_texture);
     button_menu.setTextureRect(sf::IntRect(0, 5 * sprite_size, 5 * sprite_size , sprite_size));
@@ -366,9 +431,6 @@ GameState Game::gameWon() {
         seconds /= 10;
     }
 
-    bool w_was_pressed = false;
-    bool s_was_pressed = false;
-
     int selection = 0;
     while(this->isOpen()) {
         if(this->handleEvent())
@@ -376,6 +438,7 @@ GameState Game::gameWon() {
 
         bool w_is_pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
         bool s_is_pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+        bool ret_is_pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Return);
 
         if(!w_was_pressed && w_is_pressed) {
             selection--;
@@ -387,7 +450,7 @@ GameState Game::gameWon() {
             if(selection > 2)
                 selection = 0;
         }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
+        if(!ret_was_pressed && ret_is_pressed) {
             switch(selection) {
                 case 0:
                     return GameState::MENU;
@@ -398,6 +461,7 @@ GameState Game::gameWon() {
 
         w_was_pressed = w_is_pressed;
         s_was_pressed = s_is_pressed;
+        ret_was_pressed = ret_is_pressed;
 
         switch(selection) {
             case 0:

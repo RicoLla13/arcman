@@ -33,12 +33,16 @@ class Game : public sf::RenderWindow {
         std::vector<sf::Sprite*> timer;
         std::vector<sf::Sprite*> progress;
         std::array<std::array<StaticEntity*, tile_grid_width>, tile_grid_height> pellets;
-        sf::Sprite background;
+        Entity background;
         Player* player;
 
         int init_pellet_num;
         int pellet_num = 0;
         float player_timer = 0;
+
+        bool w_was_pressed = false;
+        bool s_was_pressed = false;
+        bool ret_was_pressed = false;
         
         sf::Clock clock;
         GameState current_state = GameState::INIT;
@@ -56,6 +60,7 @@ class Game : public sf::RenderWindow {
         bool handleEvent();
         GameState menu();
         GameState loop();
+        void clearLoopObjects();
         void gameOver();
         GameState gameWon();
 
