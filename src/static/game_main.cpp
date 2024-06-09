@@ -288,7 +288,7 @@ GameState Game::loop() {
 
         int seconds = static_cast<int>(player_timer);
         int loc_progress = 100 - static_cast<int>(static_cast<float>(pellet_num) / static_cast<float>(init_pellet_num) * 100);
-        for(int i = timer.size() - 1; i >=0; i--) {
+        for(int i = timer.size() - 1; i >= 0; i--) {
             processNum(seconds % 10, timer[i]);
             seconds /= 10;
 
@@ -334,12 +334,33 @@ void Game::gameWon() {
     sf::Sprite background(game_won_texture);
     background.setScale(sprite_scale, sprite_scale);
 
+    while(timer.size() < 4)
+        timer.push_back(new sf::Sprite(numbers_texture));
+
+    for(int i = 0; i < timer.size(); i++) {
+        timer[i]->setScale(sprite_scale, sprite_scale);
+        if(i < 3)
+            timer[i]->setPosition((5 + i) * rect_size, 10 * rect_size);
+        else
+            timer[i]->setPosition((6 + i) * rect_size, 10 * rect_size);
+    }
+
+    int seconds = static_cast<int>(player_timer*10);
+    for(int i = timer.size() - 1; i >= 0; i--) {
+        processNum(seconds % 10, timer[i]);
+        seconds /= 10;
+    }
+
     while(this->isOpen()) {
         if(this->handleEvent())
             break;
 
         this->clear();
         this->draw(background);
+
+        for(auto sprite : timer)
+            this->draw(*sprite);
+
         this->display();
     }
 }
