@@ -53,7 +53,7 @@ void Game::stateMachine() {
                     this->loadTextures();
                     current_state = GameState::MENU;
                 } catch(CustomException& e) {
-                    std::cout << e.what() << std::endl;
+                    std::cerr << e.what() << std::endl;
                     current_state = GameState::CLOSE;
                 }
                 break;
@@ -64,7 +64,6 @@ void Game::stateMachine() {
                 this->initNodes();
                 this->initPellets();
                 current_state = this->loop();
-                std::cout << "Loop state quit!" << std::endl;
                 break;
             case GameState::GAME_WON:
                 current_state = this->gameWon();
@@ -277,8 +276,6 @@ GameState Game::loop() {
     }
     int pellet_num = init_pellet_num;
 
-    std::cout << init_pellet_num << std::endl;
-
     float delta_time = 0.0f;
     player_timer = 0.0f;
     clock.restart();
@@ -286,7 +283,6 @@ GameState Game::loop() {
     while(this->isOpen()) {
         if(this->handleEvent()) {
             result = GameState::CLOSE;
-            std::cout << "Game closed!" << std::endl;
             break;
         }
 

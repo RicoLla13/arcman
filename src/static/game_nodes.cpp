@@ -1,8 +1,6 @@
 #include "game.hpp"
 
 void Game::initNodes() {
-    std::cout << "Entered init nodes" << std::endl;
-
     nodes.push_back(new Node(1 * rect_size, 3 * rect_size));   // node A 0
     nodes.push_back(new Node(6 * rect_size, 3 * rect_size));   // node B 1
     nodes.push_back(new Node(8 * rect_size, 3 * rect_size));   // node C 2
@@ -131,8 +129,6 @@ void Game::initNodes() {
     // node Beta
     nodes[27]->setNeighbour(Direction::UP, nodes[19]);
     nodes[27]->setNeighbour(Direction::LEFT, nodes[26]);
-
-    std::cout << "Exit init nodes" << std::endl;
 }
 
 void Game::clearNodes() {
