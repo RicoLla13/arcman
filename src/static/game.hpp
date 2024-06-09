@@ -29,15 +29,9 @@ class Game : public sf::RenderWindow {
         sf::Texture pellet_texture;
 
         std::vector<Node*> nodes;
-        std::vector<Ghost*> ghosts;
-        std::vector<sf::Sprite*> timer;
-        std::vector<sf::Sprite*> progress;
         std::array<std::array<StaticEntity*, tile_grid_width>, tile_grid_height> pellets;
         Entity background;
-        Player* player;
 
-        int init_pellet_num;
-        int pellet_num = 0;
         float player_timer = 0;
 
         bool w_was_pressed = false;
@@ -50,12 +44,14 @@ class Game : public sf::RenderWindow {
         Game();
 
         void initNodes();
+        void clearNodes();
         void initPellets();
+        void clearPellets();
         void loadTextures();
 
         void drawNodes();
         void processNum(int num, sf::Sprite* sprite);
-        void checkPellets();
+        void checkPellets(Player* player, int& pellet_num);
 
         bool handleEvent();
         GameState menu();

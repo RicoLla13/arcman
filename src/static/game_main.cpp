@@ -9,43 +9,9 @@ Game::Game() {
 Game::~Game() {
     this->close();
 
-    if(player != nullptr)
-        delete player;
-    player = nullptr;
+    this->clearNodes();
 
-    for(auto node : nodes) {
-        if(node != nullptr)
-            delete node;
-        node = nullptr;
-    }
-
-    for(auto ghost : ghosts) {
-        if(ghost != nullptr)
-            delete ghost;
-        ghost = nullptr;
-    }
-
-    for(auto sprite : timer) {
-        if(sprite != nullptr)
-            delete sprite;
-        sprite = nullptr;
-    }
-
-    for(auto sprite : progress) {
-        if(sprite != nullptr)
-            delete sprite;
-        sprite = nullptr;
-    }
-
-    for(auto& row : pellets) {
-        for(auto pellet : row) {
-            if(pellet != nullptr)
-                delete pellet;
-            pellet = nullptr;
-        }
-    }
-
-    std::cout << "[*] Game instance destroyed!" << std::endl;
+    this->clearPellets();
 }
 
 Game& Game::getInstance() {
@@ -57,7 +23,7 @@ void Game::processNum(int num, sf::Sprite* sprite) {
     sprite->setTextureRect(sf::IntRect((num % 5) * sprite_size, num / 5 * sprite_size, sprite_size, sprite_size));
 }
 
-void Game::checkPellets() {
+void Game::checkPellets(Player* player, int& pellet_num) {
     sf::Vector2f player_pos = player->getPosition();
 
     std::vector<StaticEntity*> around;
@@ -69,6 +35,7 @@ void Game::checkPellets() {
 
     for(auto pellet : around) {
         if(player->collide(pellet)) {
+
             pellet->is_eaten = true;
 
             if(BigPellet* big_pellet = dynamic_cast<BigPellet*>(pellet))
@@ -86,25 +53,23 @@ void Game::stateMachine() {
             case GameState::INIT:
                 try {
                     this->loadTextures();
+                    current_state = GameState::MENU;
                 } catch(CustomException& e) {
-                    std::cerr << e.what() << std::endl;
-                    return;
+                    std::cout << e.what() << std::endl;
+                    current_state = GameState::CLOSE;
                 }
-                current_state = GameState::MENU;
                 break;
             case GameState::MENU:
                 current_state = this->menu();
-                std::cout << "Quit menu succesfully" << std::endl;
                 break;
             case GameState::RUN:
                 this->initNodes();
                 this->initPellets();
                 current_state = this->loop();
-                this->clearLoopObjects();
+                std::cout << "Loop state quit!" << std::endl;
                 break;
             case GameState::GAME_WON:
                 current_state = this->gameWon();
-                std::cout << "Quit game won succesfully" << std::endl;
                 break;
             case GameState::GAME_OVER:
                 this->gameOver();
@@ -119,7 +84,7 @@ void Game::stateMachine() {
 
 bool Game::handleEvent() {
     sf::Event event;
-    while (this->pollEvent(event)) {
+    while(this->pollEvent(event)) {
         if (event.type == sf::Event::Closed)
             return true;
     }
@@ -175,11 +140,9 @@ void Game::initPellets() {
             switch(level[i][j]) {
                 case '*':
                     pellets[i][j] = new SmallPellet(sf::Vector2f(j * rect_size, i * rect_size), pellet_texture);
-                    pellet_num++;
                     break;
                 case '#':
                     pellets[i][j] = new BigPellet(sf::Vector2f(j * rect_size, i * rect_size), pellet_texture);
-                    pellet_num++;
                     break;
                 default:
                     pellets[i][j] = nullptr;
@@ -187,8 +150,17 @@ void Game::initPellets() {
             }
         }
     }
+}
 
-    init_pellet_num = pellet_num;
+void Game::clearPellets() {
+    for(auto& row : pellets) {
+        for(auto& pellet : row) {
+            if(pellet != nullptr) {
+                delete pellet;
+                pellet = nullptr;
+            }
+        }
+    }
 }
 
 GameState Game::menu() {
@@ -207,9 +179,8 @@ GameState Game::menu() {
     int selection = 0;
     while(this->isOpen()) {
         if(this->handleEvent())
-            break;
 
-        std::cout << "Before keyboard ifs" << std::endl;
+            break;
 
         bool w_is_pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
         bool s_is_pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
@@ -238,8 +209,6 @@ GameState Game::menu() {
         s_was_pressed = s_is_pressed;
         ret_was_pressed = ret_is_pressed;
 
-        std::cout << "Before buttons ifs" << std::endl;
-
         switch(selection) {
             case 0:
                 button_play.setTextureRect(sf::IntRect(0, sprite_size, 5 * sprite_size , sprite_size));
@@ -255,46 +224,44 @@ GameState Game::menu() {
                 break;
         }
 
-        std::cout << "Modified buttons with ifs" << std::endl;
-        
         this->clear();
-        std::cout << "Window cleared!" << std::endl;
 
         this->draw(background);
-        std::cout << "Background drawn!" << std::endl;
         this->draw(button_play);
-        std::cout << "Button play drawn!" << std::endl;
         this->draw(button_exit);
-        std::cout << "Button exit drawn!" << std::endl;
     
         this->display();
     }
 
     return GameState::CLOSE;
+
 }
 
 GameState Game::loop() {
+    GameState result = GameState::CLOSE;
+
     background.setTexture(maze_texture);
 
-    timer.push_back(new sf::Sprite(numbers_texture));
-    timer.push_back(new sf::Sprite(numbers_texture));
-    timer.push_back(new sf::Sprite(numbers_texture));
+    std::vector<Entity*> timer;
+    timer.push_back(new Entity(numbers_texture));
+    timer.push_back(new Entity(numbers_texture));
+    timer.push_back(new Entity(numbers_texture));
 
-    progress.push_back(new sf::Sprite(numbers_texture));
-    progress.push_back(new sf::Sprite(numbers_texture));
-    progress.push_back(new sf::Sprite(numbers_texture));
+    std::vector<Entity*> progress;
+    progress.push_back(new Entity(numbers_texture));
+    progress.push_back(new Entity(numbers_texture));
+    progress.push_back(new Entity(numbers_texture));
 
     for(int i = 0; i < timer.size(); i++) {
-        timer[i]->setScale(sprite_scale, sprite_scale);
         timer[i]->setPosition(i * rect_size, rect_size);
 
-        progress[i]->setScale(sprite_scale, sprite_scale);
         progress[i]->setPosition((i + 11) * rect_size, rect_size);
     }
 
-    player = new Player(nodes[0], player_texture, player_speed);
+    Player* player = new Player(nodes[0], player_texture, player_speed);
     player->setTextureOffset(0, 3);
 
+    std::vector<Ghost*> ghosts;
     ghosts.push_back(new Ghost(nodes[22], ghost_texture, ghost_speed, GhostName::PYTHON));
     ghosts.push_back(new Ghost(nodes[23], ghost_texture, ghost_speed, GhostName::C));
     ghosts.push_back(new Ghost(nodes[24], ghost_texture, ghost_speed, GhostName::VHDL));
@@ -303,16 +270,32 @@ GameState Game::loop() {
         ghosts[i]->setTextureOffset(2 * i, 4);
     }
 
+    int init_pellet_num = 0;
+    for(auto& row : pellets) {
+        for(auto sprite : row) {
+            if(sprite != nullptr)
+                init_pellet_num++;
+        }
+    }
+    int pellet_num = init_pellet_num;
+
+    std::cout << init_pellet_num << std::endl;
+
     float delta_time = 0.0f;
     player_timer = 0.0f;
     clock.restart();
 
     while(this->isOpen()) {
-        if(this->handleEvent())
-            return GameState::CLOSE;
+        if(this->handleEvent()) {
+            result = GameState::CLOSE;
+            std::cout << "Game closed!" << std::endl;
+            break;
+        }
 
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::P))
-            return GameState::GAME_WON;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
+            result = GameState::GAME_WON;
+            break;
+        }
 
         delta_time = clock.restart().asSeconds();
         player_timer += delta_time;
@@ -331,7 +314,7 @@ GameState Game::loop() {
             loc_progress /= 10;
         }
 
-        this->checkPellets();
+        this->checkPellets(player, pellet_num);
 
         this->clear();
 
@@ -356,50 +339,50 @@ GameState Game::loop() {
 
         this->display();
 
-        if(player->collideGhosts(ghosts))
-            return GameState::GAME_OVER;
-        if(pellet_num == 0)
-            return GameState::GAME_WON;
+        if(player->collideGhosts(ghosts)) {
+            result = GameState::GAME_OVER;
+            break;
+        }
+        if(pellet_num == 0) {
+            result = GameState::GAME_WON;
+            break;
+        }
     }
 
-    return GameState::CLOSE;
-}
-
-void Game::clearLoopObjects() {
-    for(auto node : nodes) {
-        if(node != nullptr)
-            delete node;
-        node = nullptr;
-    }
-    nodes.clear();
-
-    for(auto sprite : timer) {
+    for(auto& sprite : timer) {
         if(sprite != nullptr)
             delete sprite;
         sprite = nullptr;
     }
     timer.clear();
-    
-    for(auto sprite : progress) {
+
+    for(auto& sprite : progress) {
         if(sprite != nullptr)
             delete sprite;
         sprite = nullptr;
     }
     progress.clear();
 
-    for(auto sprite : ghosts) {
-        if(sprite != nullptr)
-            delete sprite;
-        sprite = nullptr;
-    }
-    ghosts.clear();
-
     if(player != nullptr)
         delete player;
     player = nullptr;
+
+    for(auto& ghost : ghosts) {
+        if(ghost != nullptr)
+            delete ghost;
+        ghost = nullptr;
+    }
+    ghosts.clear();
+
+    this->clearNodes();
+    this->clearPellets();
+
+    return result;
 }
 
 GameState Game::gameWon() {
+    GameState result = GameState::CLOSE;
+
     background.setTexture(game_won_texture);
 
     Entity button_menu(button_texture);
@@ -414,11 +397,13 @@ GameState Game::gameWon() {
     button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
     button_exit.setPosition(5 * rect_size, 13 * rect_size);
 
-    while(timer.size() < 4)
-        timer.push_back(new sf::Sprite(numbers_texture));
+    std::vector<Entity*> timer;
+
+    timer.push_back(new Entity(numbers_texture));
+    timer.push_back(new Entity(numbers_texture));
+    timer.push_back(new Entity(numbers_texture));
 
     for(int i = 0; i < timer.size(); i++) {
-        timer[i]->setScale(sprite_scale, sprite_scale);
         if(i < 3)
             timer[i]->setPosition((5 + i) * rect_size, 7 * rect_size);
         else
@@ -432,7 +417,8 @@ GameState Game::gameWon() {
     }
 
     int selection = 0;
-    while(this->isOpen()) {
+    bool stop = false;
+    while(this->isOpen() && !stop) {
         if(this->handleEvent())
             break;
 
@@ -453,9 +439,12 @@ GameState Game::gameWon() {
         if(!ret_was_pressed && ret_is_pressed) {
             switch(selection) {
                 case 0:
-                    return GameState::MENU;
+                    result = GameState::MENU;
+                    stop = true;
+                    break;
                 default:
-                    return GameState::CLOSE;
+                    stop = true;
+                    break;
             }
         }
 
@@ -499,7 +488,14 @@ GameState Game::gameWon() {
         this->display();
     }
 
-    return GameState::CLOSE;
+    for(auto& sprite : timer) {
+        if(sprite != nullptr)
+            delete sprite;
+        sprite = nullptr;
+    }
+    timer.clear();
+
+    return result;
 }
 
 void Game::gameOver() {
