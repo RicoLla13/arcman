@@ -3,6 +3,7 @@
 Game::Game() {
     this->create(sf::VideoMode(window_width, window_height), window_title);
     this->setFramerateLimit(frame_rate);
+    this->setKeyRepeatEnabled(false);
     srand(static_cast<unsigned int>(time(0)));
 }
 
@@ -103,8 +104,7 @@ void Game::stateMachine() {
                 current_state = this->loop();
                 break;
             case GameState::GAME_WON:
-                this->gameWon();
-                current_state = GameState::CLOSE;
+                current_state = this->gameWon();;
                 break;
             case GameState::GAME_OVER:
                 this->gameOver();
@@ -279,6 +279,9 @@ GameState Game::loop() {
         if(this->handleEvent())
             return GameState::CLOSE;
 
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::P))
+            return GameState::GAME_WON;
+
         delta_time = clock.restart().asSeconds();
         player_timer += delta_time;
 
@@ -330,9 +333,21 @@ GameState Game::loop() {
     return GameState::CLOSE;
 }
 
-void Game::gameWon() {
+GameState Game::gameWon() {
     sf::Sprite background(game_won_texture);
     background.setScale(sprite_scale, sprite_scale);
+
+    Entity button_menu(button_texture);
+    button_menu.setTextureRect(sf::IntRect(0, 5 * sprite_size, 5 * sprite_size , sprite_size));
+    button_menu.setPosition(5 * rect_size, 9 * rect_size);
+
+    Entity button_top(button_texture);
+    button_top.setTextureRect(sf::IntRect(0, 6 * sprite_size, 5 * sprite_size , sprite_size));
+    button_top.setPosition(5 * rect_size, 11 * rect_size);
+
+    Entity button_exit(button_texture);
+    button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
+    button_exit.setPosition(5 * rect_size, 13 * rect_size);
 
     while(timer.size() < 4)
         timer.push_back(new sf::Sprite(numbers_texture));
@@ -340,9 +355,9 @@ void Game::gameWon() {
     for(int i = 0; i < timer.size(); i++) {
         timer[i]->setScale(sprite_scale, sprite_scale);
         if(i < 3)
-            timer[i]->setPosition((5 + i) * rect_size, 10 * rect_size);
+            timer[i]->setPosition((5 + i) * rect_size, 7 * rect_size);
         else
-            timer[i]->setPosition((6 + i) * rect_size, 10 * rect_size);
+            timer[i]->setPosition((6 + i) * rect_size, 7 * rect_size);
     }
 
     int seconds = static_cast<int>(player_timer*10);
@@ -351,18 +366,76 @@ void Game::gameWon() {
         seconds /= 10;
     }
 
+    bool w_was_pressed = false;
+    bool s_was_pressed = false;
+
+    int selection = 0;
     while(this->isOpen()) {
         if(this->handleEvent())
             break;
 
+        bool w_is_pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+        bool s_is_pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+
+        if(!w_was_pressed && w_is_pressed) {
+            selection--;
+            if(selection < 0)
+                selection = 2;
+        }
+        if(!s_was_pressed && s_is_pressed) {
+            selection++;
+            if(selection > 2)
+                selection = 0;
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
+            switch(selection) {
+                case 0:
+                    return GameState::MENU;
+                default:
+                    return GameState::CLOSE;
+            }
+        }
+
+        w_was_pressed = w_is_pressed;
+        s_was_pressed = s_is_pressed;
+
+        switch(selection) {
+            case 0:
+                button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
+                button_menu.setTextureRect(sf::IntRect(0, 5 * sprite_size, 5 * sprite_size , sprite_size));
+                button_top.setTextureRect(sf::IntRect(0, 6 * sprite_size, 5 * sprite_size , sprite_size));
+                break;
+            case 1:
+                button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
+                button_menu.setTextureRect(sf::IntRect(0, 4 * sprite_size, 5 * sprite_size , sprite_size));
+                button_top.setTextureRect(sf::IntRect(0, 7 * sprite_size, 5 * sprite_size , sprite_size));
+                break;
+            case 2:
+                button_exit.setTextureRect(sf::IntRect(0, 3 * sprite_size, 5 * sprite_size , sprite_size));
+                button_menu.setTextureRect(sf::IntRect(0, 4 * sprite_size, 5 * sprite_size , sprite_size));
+                button_top.setTextureRect(sf::IntRect(0, 6 * sprite_size, 5 * sprite_size , sprite_size));
+                break;
+            default:
+                button_top.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
+                button_menu.setTextureRect(sf::IntRect(0, 4 * sprite_size, 5 * sprite_size , sprite_size));
+                button_top.setTextureRect(sf::IntRect(0, 6 * sprite_size, 5 * sprite_size , sprite_size));
+                break;
+        }
+
         this->clear();
         this->draw(background);
+
+        this->draw(button_menu);
+        this->draw(button_top);
+        this->draw(button_exit);
 
         for(auto sprite : timer)
             this->draw(*sprite);
 
         this->display();
     }
+
+    return GameState::CLOSE;
 }
 
 void Game::gameOver() {

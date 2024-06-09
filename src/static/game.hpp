@@ -57,7 +57,7 @@ class Game : public sf::RenderWindow {
         GameState menu();
         GameState loop();
         void gameOver();
-        void gameWon();
+        GameState gameWon();
 
     public:
         static Game& getInstance();
