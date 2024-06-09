@@ -30,7 +30,6 @@ class Game : public sf::RenderWindow {
 
         std::vector<Node*> nodes;
         std::array<std::array<StaticEntity*, tile_grid_width>, tile_grid_height> pellets;
-        Entity background;
 
         float player_timer = 0;
 

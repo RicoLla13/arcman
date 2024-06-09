@@ -8,9 +8,7 @@ Game::Game() {
 
 Game::~Game() {
     this->close();
-
     this->clearNodes();
-
     this->clearPellets();
 }
 
@@ -164,7 +162,7 @@ void Game::clearPellets() {
 }
 
 GameState Game::menu() {
-    background.setTexture(menu_texture);
+    Entity background(menu_texture);
 
     Entity button_play(button_texture);
     button_play.setTextureRect(sf::IntRect(0, sprite_size, 5 * sprite_size , sprite_size));
@@ -240,7 +238,7 @@ GameState Game::menu() {
 GameState Game::loop() {
     GameState result = GameState::CLOSE;
 
-    background.setTexture(maze_texture);
+    Entity background(maze_texture);
 
     std::vector<Entity*> timer;
     timer.push_back(new Entity(numbers_texture));
@@ -383,7 +381,7 @@ GameState Game::loop() {
 GameState Game::gameWon() {
     GameState result = GameState::CLOSE;
 
-    background.setTexture(game_won_texture);
+    Entity background(game_won_texture);
 
     Entity button_menu(button_texture);
     button_menu.setTextureRect(sf::IntRect(0, 5 * sprite_size, 5 * sprite_size , sprite_size));
@@ -398,7 +396,7 @@ GameState Game::gameWon() {
     button_exit.setPosition(5 * rect_size, 13 * rect_size);
 
     std::vector<Entity*> timer;
-
+    timer.push_back(new Entity(numbers_texture));
     timer.push_back(new Entity(numbers_texture));
     timer.push_back(new Entity(numbers_texture));
     timer.push_back(new Entity(numbers_texture));
@@ -499,8 +497,7 @@ GameState Game::gameWon() {
 }
 
 void Game::gameOver() {
-    sf::Sprite background(game_over_texture);
-    background.setScale(sprite_scale, sprite_scale);
+    Entity background(game_over_texture);
 
     while(this->isOpen()) {
         if(this->handleEvent())
