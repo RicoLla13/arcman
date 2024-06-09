@@ -125,6 +125,10 @@ void Game::stateMachine() {
             case GameState::RUN:
                 current_state = this->loop();
                 break;
+            case GameState::GAME_WON:
+                this->gameWon();
+                current_state = GameState::CLOSE;
+                break;
             case GameState::GAME_OVER:
                 this->gameOver();
                 current_state = GameState::CLOSE;
@@ -163,6 +167,8 @@ void Game::loadTextures() {
         throw CustomException("[!] #loadTextures()# -> Numbers image not found!");
     if(!pellet_texture.loadFromFile("assets/Pellet.png"))
         throw CustomException("[!] #loadTextures()# -> Pellet image not found!");
+    if(!game_won_texture.loadFromFile("assets/Game_Won.png"))
+        throw CustomException("[!] #loadTextures()# -> Game Won image not found!");
 }
 
 void Game::initPellets() {
@@ -339,10 +345,26 @@ GameState Game::loop() {
         this->display();
 
         if(player->collideGhosts(ghosts))
-            break;
+            return GameState::GAME_OVER;
+        if(pellet_num == 0)
+            return GameState::GAME_WON;
     }
 
-    return GameState::GAME_OVER;
+    return GameState::CLOSE;
+}
+
+void Game::gameWon() {
+    sf::Sprite background(game_won_texture);
+    background.setScale(sprite_scale, sprite_scale);
+
+    while(this->isOpen()) {
+        if(this->handleEvent())
+            break;
+
+        this->clear();
+        this->draw(background);
+        this->display();
+    }
 }
 
 void Game::gameOver() {

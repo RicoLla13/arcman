@@ -37,6 +37,7 @@ enum class GameState {
     INIT,
     MENU,
     RUN,
+    GAME_WON,
     GAME_OVER
 };
 
