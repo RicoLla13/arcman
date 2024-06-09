@@ -22,7 +22,7 @@ Direction Player::getInput() {
 }
 
 bool Player::collideGhosts(const std::vector<Ghost*> ghosts) {
-    for(auto ghost : ghosts) {
+    for(const auto& ghost : ghosts) {
         sf::Vector2f ghost_position = ghost->getPosition();
         sf::Vector2f player_position = this->getPosition();
 

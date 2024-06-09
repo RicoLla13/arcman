@@ -270,7 +270,7 @@ GameState Game::loop() {
 
     int init_pellet_num = 0;
     for(auto& row : pellets) {
-        for(auto sprite : row) {
+        for(const auto& sprite : row) {
             if(sprite != nullptr)
                 init_pellet_num++;
         }
@@ -299,7 +299,7 @@ GameState Game::loop() {
         player_timer += delta_time;
 
         player->update(delta_time);
-        for(auto ghost : ghosts)
+        for(auto& ghost : ghosts)
             ghost->update(delta_time);
 
         int seconds = static_cast<int>(player_timer);
@@ -318,21 +318,21 @@ GameState Game::loop() {
 
         this->draw(background);
 
-        for(auto sprite : timer)
+        for(const auto& sprite : timer)
             this->draw(*sprite);
 
-        for(auto sprite : progress)
+        for(const auto& sprite : progress)
             this->draw(*sprite);
 
         for(auto& row : pellets) {
-            for(auto pellet : row)
+            for(const auto& pellet : row)
                 if(pellet != nullptr && !pellet->is_eaten)
                     this->draw(*pellet);
         }
 
         this->draw(*player);
 
-        for(auto ghost : ghosts)
+        for(const auto& ghost : ghosts)
             this->draw(*ghost);
 
         this->display();
@@ -480,7 +480,7 @@ GameState Game::gameWon() {
         this->draw(button_top);
         this->draw(button_exit);
 
-        for(auto sprite : timer)
+        for(const auto& sprite : timer)
             this->draw(*sprite);
 
         this->display();

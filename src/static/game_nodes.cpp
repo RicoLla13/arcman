@@ -136,7 +136,7 @@ void Game::initNodes() {
 }
 
 void Game::clearNodes() {
-    for(auto node : nodes) {
+    for(auto& node : nodes) {
         if(node != nullptr)
             delete node;
         node = nullptr;
@@ -146,7 +146,7 @@ void Game::clearNodes() {
 
 void Game::drawNodes() {
     // for each node draw a red circle with radius 20
-    for(auto node : nodes) {
+    for(const auto& node : nodes) {
         if(node == nullptr)
             throw CustomException("[!] #gameLoop()# -> A node in node vector is null!");
 
@@ -156,7 +156,7 @@ void Game::drawNodes() {
         this->draw(circle);
 
         // draw connections
-        for(auto neighbor : node->getAllNeighbours()) {
+        for(const auto& neighbor : node->getAllNeighbours()) {
             if(neighbor == nullptr)
                 continue;
 
