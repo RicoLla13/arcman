@@ -123,8 +123,7 @@ void Game::stateMachine() {
                 current_state = this->menu();
                 break;
             case GameState::RUN:
-                this->loop();
-                current_state = GameState::GAME_OVER;
+                current_state = this->loop();
                 break;
             case GameState::GAME_OVER:
                 this->gameOver();
@@ -258,7 +257,7 @@ GameState Game::menu() {
     return GameState::CLOSE;
 }
 
-void Game::loop() {
+GameState Game::loop() {
     background.setTexture(maze_texture);
     background.setScale(sprite_scale, sprite_scale);
 
@@ -295,7 +294,7 @@ void Game::loop() {
 
     while(this->isOpen()) {
         if(this->handleEvent())
-            break;
+            return GameState::CLOSE;
 
         delta_time = clock.restart().asSeconds();
         player_timer += delta_time;
@@ -342,6 +341,8 @@ void Game::loop() {
         if(player->collideGhosts(ghosts))
             break;
     }
+
+    return GameState::GAME_OVER;
 }
 
 void Game::gameOver() {
