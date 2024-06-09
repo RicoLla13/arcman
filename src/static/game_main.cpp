@@ -62,45 +62,22 @@ void Game::processNum(int num, sf::Sprite* sprite) {
 void Game::checkPellets() {
     sf::Vector2f player_pos = player->getPosition();
 
-    StaticEntity* pellet0 = pellets[static_cast<int>(ceil(player_pos.y / rect_size))][static_cast<int>(ceil(player_pos.x / rect_size))];
-    StaticEntity* pellet1 = pellets[static_cast<int>(ceil(player_pos.y / rect_size) + 1)][static_cast<int>(ceil(player_pos.x / rect_size))];
-    StaticEntity* pellet2 = pellets[static_cast<int>(ceil(player_pos.y / rect_size))][static_cast<int>(ceil(player_pos.x / rect_size) + 1)];
-    StaticEntity* pellet3 = pellets[static_cast<int>(ceil(player_pos.y / rect_size) + 1)][static_cast<int>(floor(player_pos.x / rect_size) + 1)];
+    std::vector<StaticEntity*> around;
 
-    if(player->collide(pellet0)) {
-        pellet0->is_eaten = true;
+    around.push_back(pellets[static_cast<int>(ceil(player_pos.y / rect_size))][static_cast<int>(ceil(player_pos.x / rect_size))]);
+    around.push_back(pellets[static_cast<int>(ceil(player_pos.y / rect_size) + 1)][static_cast<int>(ceil(player_pos.x / rect_size))]);
+    around.push_back(pellets[static_cast<int>(ceil(player_pos.y / rect_size))][static_cast<int>(ceil(player_pos.x / rect_size) + 1)]);
+    around.push_back(pellets[static_cast<int>(ceil(player_pos.y / rect_size) + 1)][static_cast<int>(floor(player_pos.x / rect_size) + 1)]);
 
-        if(BigPellet* big_pellet = dynamic_cast<BigPellet*>(pellet0))
-            player_timer -= big_pellet_bonus;
+    for(auto pellet : around) {
+        if(player->collide(pellet)) {
+            pellet->is_eaten = true;
 
-        pellet_num--;
-    }
+            if(BigPellet* big_pellet = dynamic_cast<BigPellet*>(pellet))
+                player_timer -= big_pellet_bonus;
 
-    if(player->collide(pellet1)) {
-        pellet1->is_eaten = true;
-
-        if(BigPellet* big_pellet = dynamic_cast<BigPellet*>(pellet1))
-            player_timer -= big_pellet_bonus;
-
-        pellet_num--;
-    }
-
-    if(player->collide(pellet2)) {
-        pellet2->is_eaten = true;
-
-        if(BigPellet* big_pellet = dynamic_cast<BigPellet*>(pellet2))
-            player_timer -= big_pellet_bonus;
-
-        pellet_num--;
-    }
-
-    if(player->collide(pellet3)) {
-        pellet3->is_eaten = true;
-
-        if(BigPellet* big_pellet = dynamic_cast<BigPellet*>(pellet3))
-            player_timer -= big_pellet_bonus;
-
-        pellet_num--;
+            pellet_num--;
+        }
     }
 }
 
