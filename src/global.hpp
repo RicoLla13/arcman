@@ -1,10 +1,5 @@
 #pragma once
 
-#include <string>
-#include <iostream>
-#include <cstdlib>
-#include <time.h>
-
 #include <SFML/Graphics.hpp>
 
 constexpr int frame_rate = 60;

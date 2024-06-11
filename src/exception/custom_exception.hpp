@@ -1,5 +1,4 @@
-#ifndef CUSTOM_EXCEPTION
-#define CUSTOM_EXCEPTION
+#pragma once
 
 #include <exception>
 
@@ -14,5 +13,3 @@ class CustomException : public std::exception {
             return message.c_str();
         }
 };
-
-#endif

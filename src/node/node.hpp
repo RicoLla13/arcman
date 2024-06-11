@@ -4,7 +4,6 @@
 #include "../global.hpp"
 #include "../exception/custom_exception.hpp"
 
-#include <SFML/Graphics.hpp>
 #include <math.h>
 
 class Node {

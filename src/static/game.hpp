@@ -14,6 +14,9 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <array>
+#include <cstdlib>
+#include <string>
+#include <iostream>
 
 class Game : public sf::RenderWindow {
     private:

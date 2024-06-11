@@ -1,8 +1,6 @@
 #include "static/game.hpp"
 #include "logger/logger.hpp"
 
-#include <iostream>
-
 int main() {
     Logger* logger = Logger::getInstance();
     logger->log("Start application");
