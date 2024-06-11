@@ -42,4 +42,5 @@ enum class GhostName {
     VHDL = 2
 };
 
+// Used in various entities to check if 2 different directions are opposite from one another
 bool isOppositeDirection(const Direction& d1, const Direction& d2);
