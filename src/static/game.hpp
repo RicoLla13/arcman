@@ -9,6 +9,7 @@
 #include "../entity/static/small_pellet.hpp"
 #include "../entity/static/big_pellet.hpp"
 #include "../exception/custom_exception.hpp"
+#include "../logger/logger.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <vector>
@@ -39,6 +40,8 @@ class Game : public sf::RenderWindow {
         
         sf::Clock clock;
         GameState current_state = GameState::INIT;
+
+        Logger* logger;
 
         Game();
 

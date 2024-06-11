@@ -4,6 +4,7 @@ Game::Game() {
     this->create(sf::VideoMode(window_width, window_height), window_title);
     this->setFramerateLimit(frame_rate);
     srand(static_cast<unsigned int>(time(0)));
+    logger = Logger::getInstance();
 }
 
 Game::~Game() {
@@ -59,6 +60,7 @@ void Game::stateMachine() {
                     std::cerr << e.what() << std::endl;
                     current_state = GameState::CLOSE;
                 }
+                logger->log("Game initialized");
                 break;
             case GameState::MENU:
                 current_state = this->menu();

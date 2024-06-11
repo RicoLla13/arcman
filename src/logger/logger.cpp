@@ -1,5 +1,7 @@
 #include "logger.hpp"
 
+Logger* Logger::instance = nullptr;
+
 Logger::Logger() {
     this->open(this->log_file, std::ios::out | std::ios::app);
 
@@ -11,8 +13,10 @@ Logger::~Logger() {
     this->close();
 }
 
-Logger& Logger::getInstance() {
-    static Logger instance;
+Logger* Logger::getInstance() {
+    if(instance == nullptr)
+        instance = new Logger();
+
     return instance;
 }
 
@@ -23,4 +27,8 @@ std::string Logger::getCurrentTime() {
     tstruct = *localtime(&now);
     strftime(buf, sizeof(buf), "%d-%m-%Y %X", &tstruct);
     return buf;
+}
+
+void Logger::log(std::string message) {
+    *this << "[" << this->getCurrentTime() << "]" << " - " << message << std::endl;
 }

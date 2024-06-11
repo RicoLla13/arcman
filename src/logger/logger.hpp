@@ -8,14 +8,17 @@
 class Logger : public std::ofstream {
     private:
         std::string log_file = "log.txt";
+        static Logger* instance;
         Logger();
 
+        std::string getCurrentTime();
+
     public:
-        static Logger& getInstance();
+        static Logger* getInstance();
 
         Logger(Logger const&) = delete;
         void operator=(Logger const&) = delete;
         ~Logger();
 
-        std::string getCurrentTime();
+        void log(std::string message);
 };
