@@ -18,6 +18,9 @@ Game& Game::getInstance() {
 }
 
 void Game::processNum(int num, sf::Sprite* sprite) {
+    if(sprite == nullptr)
+        return;
+
     sprite->setTextureRect(sf::IntRect((num % 5) * sprite_size, num / 5 * sprite_size, sprite_size, sprite_size));
 }
 
@@ -285,8 +288,10 @@ GameState Game::loop() {
             break;
         }
 
+        // Backdoor
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
             result = GameState::GAME_WON;
+            player_timer = 999.9f;
             break;
         }
 
@@ -298,14 +303,21 @@ GameState Game::loop() {
             ghost->update(delta_time);
 
         int seconds = static_cast<int>(player_timer);
+        int seconds_copy = seconds;
+
         int loc_progress = 100 - static_cast<int>(static_cast<float>(pellet_num) / static_cast<float>(init_pellet_num) * 100);
         for(int i = timer.size() - 1; i >= 0; i--) {
-            processNum(seconds % 10, timer[i]);
-            seconds /= 10;
+            processNum(seconds_copy % 10, timer[i]);
+            seconds_copy /= 10;
 
             processNum(loc_progress % 10, progress[i]);
             loc_progress /= 10;
         }
+
+        if(seconds < 100)
+            timer[0]->setTextureRect(sf::IntRect(0, 0, 0, 0));
+        if(seconds < 10)
+            timer[1]->setTextureRect(sf::IntRect(0, 0, 0, 0));
 
         this->checkPellets(player, pellet_num);
 
@@ -394,16 +406,23 @@ GameState Game::gameWon() {
 
     for(int i = 0; i < timer.size(); i++) {
         if(i < 3)
-            timer[i]->setPosition((5 + i) * rect_size, 7 * rect_size);
+            timer[i]->setPosition((7 + i) * rect_size, 7 * rect_size);
         else
-            timer[i]->setPosition((6 + i) * rect_size, 7 * rect_size);
+            timer[i]->setPosition((8 + i) * rect_size, 7 * rect_size);
     }
 
     int seconds = static_cast<int>(player_timer*10);
+
+    int seconds_copy = seconds;   
     for(int i = timer.size() - 1; i >= 0; i--) {
-        processNum(seconds % 10, timer[i]);
-        seconds /= 10;
+        processNum(seconds_copy % 10, timer[i]);
+        seconds_copy /= 10;
     }
+
+    if(seconds < 1000)
+        timer[0]->setTextureRect(sf::IntRect(0, 0, 0, 0));
+    if(seconds < 100)
+        timer[1]->setTextureRect(sf::IntRect(0, 0, 0, 0));
 
     int selection = 0;
     bool stop = false;
