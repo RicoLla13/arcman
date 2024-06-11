@@ -7,13 +7,18 @@ int main() {
     Logger* logger = Logger::getInstance();
     logger->log("Start application");
 
-    Game& game = Game::getInstance();
-    game.stateMachine();
+    Game* game = Game::getInstance();
+    game->stateMachine();
+
+    if(game != nullptr)
+        delete game;
+    game = nullptr;
 
     if(logger != nullptr) {
         logger->log("End application");
         delete logger;
     }
+    logger = nullptr;
 
     return 0;
 }

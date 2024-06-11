@@ -1,5 +1,7 @@
 #include "game.hpp"
 
+Game* Game::instance = nullptr;
+
 Game::Game() {
     this->create(sf::VideoMode(window_width, window_height), window_title);
     this->setFramerateLimit(frame_rate);
@@ -13,8 +15,10 @@ Game::~Game() {
     this->clearPellets();
 }
 
-Game& Game::getInstance() {
-    static Game instance;
+Game* Game::getInstance() {
+    if(instance == nullptr)
+        instance = new Game();
+
     return instance;
 }
 

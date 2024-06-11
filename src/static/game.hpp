@@ -43,6 +43,7 @@ class Game : public sf::RenderWindow {
 
         Logger* logger;
 
+        static Game* instance;
         Game();
 
         void initNodes();
@@ -62,7 +63,7 @@ class Game : public sf::RenderWindow {
         GameState gameWon();
 
     public:
-        static Game& getInstance();
+        static Game* getInstance();
 
         Game(Game const&) = delete;
         void operator=(Game const&) = delete;
