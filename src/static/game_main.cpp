@@ -63,17 +63,21 @@ void Game::stateMachine() {
                 logger->log("Game initialized");
                 break;
             case GameState::MENU:
+                logger->log("Entered menu");
                 current_state = this->menu();
                 break;
             case GameState::RUN:
+                logger->log("Started a round");
                 this->initNodes();
                 this->initPellets();
                 current_state = this->loop();
                 break;
             case GameState::GAME_WON:
+                logger->log("Game won with time: " + std::to_string(player_timer) + " seconds");
                 current_state = this->gameWon();
                 break;
             case GameState::GAME_OVER:
+                logger->log("Game lost");
                 current_state = this->gameOver();
                 break;
             default:

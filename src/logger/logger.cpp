@@ -7,9 +7,12 @@ Logger::Logger() {
 
     if(!this->is_open())
         throw CustomException("[!] #Logger()# -> Could not create/access log file!");
+
+    *this << "--------------------------------------" << std::endl;
 }
 
 Logger::~Logger() {
+    *this << "--------------------------------------" << std::endl;
     this->close();
 }
 
