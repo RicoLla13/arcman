@@ -1,9 +1,5 @@
 #include "entity.hpp"
 
-Entity::Entity() {
-    this->setScale(sprite_scale, sprite_scale);
-}
-
 Entity::Entity(const sf::Texture& texture) 
     : sf::Sprite(texture)
 {
