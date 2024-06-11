@@ -55,8 +55,7 @@ class Game : public sf::RenderWindow {
         bool handleEvent();
         GameState menu();
         GameState loop();
-        void clearLoopObjects();
-        void gameOver();
+        GameState gameOver();
         GameState gameWon();
 
     public:

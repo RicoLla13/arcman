@@ -69,8 +69,7 @@ void Game::stateMachine() {
                 current_state = this->gameWon();
                 break;
             case GameState::GAME_OVER:
-                this->gameOver();
-                current_state = GameState::CLOSE;
+                current_state = this->gameOver();
                 break;
             default:
                 stop = true;
@@ -383,13 +382,9 @@ GameState Game::gameWon() {
     button_menu.setTextureRect(sf::IntRect(0, 5 * sprite_size, 5 * sprite_size , sprite_size));
     button_menu.setPosition(5 * rect_size, 9 * rect_size);
 
-    Entity button_top(button_texture);
-    button_top.setTextureRect(sf::IntRect(0, 6 * sprite_size, 5 * sprite_size , sprite_size));
-    button_top.setPosition(5 * rect_size, 11 * rect_size);
-
     Entity button_exit(button_texture);
     button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
-    button_exit.setPosition(5 * rect_size, 13 * rect_size);
+    button_exit.setPosition(5 * rect_size, 11 * rect_size);
 
     std::vector<Entity*> timer;
     timer.push_back(new Entity(numbers_texture));
@@ -423,11 +418,11 @@ GameState Game::gameWon() {
         if(!w_was_pressed && w_is_pressed) {
             selection--;
             if(selection < 0)
-                selection = 2;
+                selection = 1;
         }
         if(!s_was_pressed && s_is_pressed) {
             selection++;
-            if(selection > 2)
+            if(selection > 1)
                 selection = 0;
         }
         if(!ret_was_pressed && ret_is_pressed) {
@@ -448,24 +443,16 @@ GameState Game::gameWon() {
 
         switch(selection) {
             case 0:
-                button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
                 button_menu.setTextureRect(sf::IntRect(0, 5 * sprite_size, 5 * sprite_size , sprite_size));
-                button_top.setTextureRect(sf::IntRect(0, 6 * sprite_size, 5 * sprite_size , sprite_size));
+                button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
                 break;
             case 1:
-                button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
                 button_menu.setTextureRect(sf::IntRect(0, 4 * sprite_size, 5 * sprite_size , sprite_size));
-                button_top.setTextureRect(sf::IntRect(0, 7 * sprite_size, 5 * sprite_size , sprite_size));
-                break;
-            case 2:
                 button_exit.setTextureRect(sf::IntRect(0, 3 * sprite_size, 5 * sprite_size , sprite_size));
-                button_menu.setTextureRect(sf::IntRect(0, 4 * sprite_size, 5 * sprite_size , sprite_size));
-                button_top.setTextureRect(sf::IntRect(0, 6 * sprite_size, 5 * sprite_size , sprite_size));
                 break;
             default:
-                button_top.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
                 button_menu.setTextureRect(sf::IntRect(0, 4 * sprite_size, 5 * sprite_size , sprite_size));
-                button_top.setTextureRect(sf::IntRect(0, 6 * sprite_size, 5 * sprite_size , sprite_size));
+                button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
                 break;
         }
 
@@ -473,7 +460,6 @@ GameState Game::gameWon() {
         this->draw(background);
 
         this->draw(button_menu);
-        this->draw(button_top);
         this->draw(button_exit);
 
         for(const auto& sprite : timer)
@@ -492,15 +478,77 @@ GameState Game::gameWon() {
     return result;
 }
 
-void Game::gameOver() {
+GameState Game::gameOver() {
+    GameState result = GameState::CLOSE;
     Entity background(game_over_texture);
 
-    while(this->isOpen()) {
+    Entity button_menu(button_texture);
+    button_menu.setTextureRect(sf::IntRect(0, 5 * sprite_size, 5 * sprite_size , sprite_size));
+    button_menu.setPosition(5 * rect_size, 9 * rect_size);
+
+    Entity button_exit(button_texture);
+    button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
+    button_exit.setPosition(5 * rect_size, 11 * rect_size);
+
+    int selection = 0;
+    bool stop = false;
+    while(this->isOpen() && !stop) {
         if(this->handleEvent())
             break;
 
+        bool w_is_pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+        bool s_is_pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+        bool ret_is_pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Return);
+
+        if(!w_was_pressed && w_is_pressed) {
+            selection--;
+            if(selection < 0)
+                selection = 1;
+        }
+        if(!s_was_pressed && s_is_pressed) {
+            selection++;
+            if(selection > 1)
+                selection = 0;
+        }
+        if(!ret_was_pressed && ret_is_pressed) {
+            switch(selection) {
+                case 0:
+                    result = GameState::MENU;
+                    stop = true;
+                    break;
+                default:
+                    stop = true;
+                    break;
+            }
+        }
+
+        w_was_pressed = w_is_pressed;
+        s_was_pressed = s_is_pressed;
+        ret_was_pressed = ret_is_pressed;
+
+        switch(selection) {
+            case 0:
+                button_menu.setTextureRect(sf::IntRect(0, 5 * sprite_size, 5 * sprite_size , sprite_size));
+                button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
+                break;
+            case 1:
+                button_menu.setTextureRect(sf::IntRect(0, 4 * sprite_size, 5 * sprite_size , sprite_size));
+                button_exit.setTextureRect(sf::IntRect(0, 3 * sprite_size, 5 * sprite_size , sprite_size));
+                break;
+            default:
+                button_menu.setTextureRect(sf::IntRect(0, 4 * sprite_size, 5 * sprite_size , sprite_size));
+                button_exit.setTextureRect(sf::IntRect(0, 2 * sprite_size, 5 * sprite_size , sprite_size));
+                break;
+        }
+
         this->clear();
         this->draw(background);
+
+        this->draw(button_menu);
+        this->draw(button_exit);
+
         this->display();
     }
+
+    return result;
 }
