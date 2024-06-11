@@ -304,20 +304,25 @@ GameState Game::loop() {
 
         int seconds = static_cast<int>(player_timer);
         int seconds_copy = seconds;
-
         int loc_progress = 100 - static_cast<int>(static_cast<float>(pellet_num) / static_cast<float>(init_pellet_num) * 100);
+        int loc_progress_copy = loc_progress;
+
         for(int i = timer.size() - 1; i >= 0; i--) {
             processNum(seconds_copy % 10, timer[i]);
             seconds_copy /= 10;
 
-            processNum(loc_progress % 10, progress[i]);
-            loc_progress /= 10;
+            processNum(loc_progress_copy % 10, progress[i]);
+            loc_progress_copy /= 10;
         }
 
         if(seconds < 100)
             timer[0]->setTextureRect(sf::IntRect(0, 0, 0, 0));
         if(seconds < 10)
             timer[1]->setTextureRect(sf::IntRect(0, 0, 0, 0));
+        if(loc_progress < 100)
+            progress[0]->setTextureRect(sf::IntRect(0, 0, 0, 0));
+        if(loc_progress < 10)
+            progress[1]->setTextureRect(sf::IntRect(0, 0, 0, 0));
 
         this->checkPellets(player, pellet_num);
 
