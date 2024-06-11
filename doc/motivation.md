@@ -29,6 +29,5 @@ The objectives for the game are:
 * Implement a class **Entity**, preferably extending the **Sprite** class provided by **SFML**, where I can manage all the general things related to the entities in the game 
 * Implement the **Player** as accurate as possible from the base game
 * Implement **Ghosts** that chase the player (choosing direction randomly or using a search algorithm)
-* Implement a *direction queue* for player's mouvement
 * Implement the physics for the maze, using entity collision or an unoriented graph
 * Implement a **Logger**
