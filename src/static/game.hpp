@@ -55,7 +55,6 @@ class Game : public sf::RenderWindow {
         void clearPellets();
         void loadTextures();
 
-        void drawNodes();
         void processNum(int num, sf::Sprite* sprite);
         void checkPellets(Player* player, int& pellet_num);
 

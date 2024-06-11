@@ -139,35 +139,3 @@ void Game::clearNodes() {
     }
     nodes.clear();
 }
-
-void Game::drawNodes() {
-    // for each node draw a red circle with radius 20
-    for(const auto& node : nodes) {
-        if(node == nullptr)
-            throw CustomException("[!] #gameLoop()# -> A node in node vector is null!");
-
-        sf::CircleShape circle(20);
-        circle.setFillColor(sf::Color::Blue);
-        circle.setPosition(node->getPosition());
-        this->draw(circle);
-
-        // draw connections
-        for(const auto& neighbor : node->getAllNeighbours()) {
-            if(neighbor == nullptr)
-                continue;
-
-            // Calculate the positions of the nodes
-            sf::Vector2f startPos = node->getPosition() + sf::Vector2f(20, 20); // Start of the line (center of the node)
-            sf::Vector2f endPos = neighbor->getPosition() + sf::Vector2f(20, 20); // End of the line (center of the connected node)
-
-            // Create line vertices
-            sf::Vertex line[] = {
-                sf::Vertex(startPos),
-                sf::Vertex(endPos)
-            };
-
-            // Draw the line
-            this->draw(line, 2, sf::Lines);
-        }
-    }
-}
