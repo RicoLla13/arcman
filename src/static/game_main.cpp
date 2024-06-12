@@ -149,10 +149,14 @@ void Game::initPellets(std::array<std::array<StaticEntity*, tile_grid_width>, ti
         for(int j = 0; j < tile_grid_width; j++) {
             switch(level[i][j]) {
                 case '*':
-                    pellets[i][j] = new SmallPellet(sf::Vector2f(j * rect_size, i * rect_size), pellet_texture);
+                    pellets[i][j] = new SmallPellet(
+                            sf::Vector2f(j * rect_size, i * rect_size), 
+                            pellet_texture);
                     break;
                 case '#':
-                    pellets[i][j] = new BigPellet(sf::Vector2f(j * rect_size, i * rect_size), pellet_texture);
+                    pellets[i][j] = new BigPellet(
+                            sf::Vector2f(j * rect_size, i * rect_size),
+                            pellet_texture);
                     break;
                 default:
                     pellets[i][j] = nullptr;
@@ -302,7 +306,9 @@ GameState Game::loop() {
 
         int seconds = static_cast<int>(player_timer);
         int seconds_copy = seconds;
-        int loc_progress = 100 - static_cast<int>(static_cast<float>(pellet_num) / static_cast<float>(init_pellet_num) * 100);
+        int loc_progress = 100 - static_cast<int>(
+                static_cast<float>(pellet_num) / 
+                static_cast<float>(init_pellet_num) * 100);
         int loc_progress_copy = loc_progress;
 
         for(int i = timer.size() - 1; i >= 0; i--) {
