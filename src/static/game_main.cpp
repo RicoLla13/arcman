@@ -32,10 +32,13 @@ void Game::checkPellets(Player* player, int& pellet_num, std::array<std::array<S
 
     std::vector<StaticEntity*> around;
 
-    around.push_back(pellets[static_cast<int>(ceil(player_pos.y / rect_size))][static_cast<int>(ceil(player_pos.x / rect_size))]);
-    around.push_back(pellets[static_cast<int>(ceil(player_pos.y / rect_size) + 1)][static_cast<int>(ceil(player_pos.x / rect_size))]);
-    around.push_back(pellets[static_cast<int>(ceil(player_pos.y / rect_size))][static_cast<int>(ceil(player_pos.x / rect_size) + 1)]);
-    around.push_back(pellets[static_cast<int>(ceil(player_pos.y / rect_size) + 1)][static_cast<int>(floor(player_pos.x / rect_size) + 1)]);
+    int grid_x = static_cast<int>(ceil(player_pos.x / rect_size));
+    int grid_y = static_cast<int>(ceil(player_pos.y / rect_size));
+
+    around.push_back(pellets[grid_y][grid_x]);
+    around.push_back(pellets[grid_y][grid_x + 1]);
+    around.push_back(pellets[grid_y + 1][grid_x]);
+    around.push_back(pellets[grid_y + 1][grid_x + 1]);
 
     for(auto pellet : around) {
         if(player->collide(pellet)) {
