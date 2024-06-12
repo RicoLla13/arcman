@@ -18,10 +18,13 @@
 #include <string>
 #include <iostream>
 
+// The class that represents the game
+// This class is a singleton, so only one instance of it can exist
 class Game : public sf::RenderWindow {
     private:
-        std::string window_title = "ARCMAN";
+        std::string window_title = "ARCMAN"; // Title of the window
 
+        // Game Textures
         sf::Texture player_texture;
         sf::Texture ghost_texture;
         sf::Texture maze_texture;
@@ -32,39 +35,46 @@ class Game : public sf::RenderWindow {
         sf::Texture numbers_texture;
         sf::Texture pellet_texture;
 
-        float player_timer = 0;
+        float player_timer = 0; // The variable that manages the player's time 'score'
 
-        bool w_was_pressed = false;
-        bool s_was_pressed = false;
-        bool ret_was_pressed = false;
+        // Booleans used to detect a key press
+        bool w_was_pressed = false;   // W
+        bool s_was_pressed = false;   // S
+        bool ret_was_pressed = false; // Enter / Return
         
-        sf::Clock clock;
-        Logger* logger;
+        sf::Clock clock; // SFML CLock used for timing (delta_time, score)
+        Logger* logger;  // The logger object used to log messages
 
-        static Game* instance;
-        Game();
+        // Singleton related
+        static Game* instance; // current instance of the game
+        Game();                // private constructor
 
+        // Initialization functions
         void initNodes(std::vector<Node*>& nodes);
-        void clearNodes();
         void initPellets(std::array<std::array<StaticEntity*, tile_grid_width>, tile_grid_height>& pellets);
-        void clearPellets();
         void loadTextures();
 
-        void processNum(int num, sf::Sprite* sprite);
-        void checkPellets(Player* player, int& pellet_num, std::array<std::array<StaticEntity*, tile_grid_width>, tile_grid_height>& pellets);
+        // Various helper functions
+        void processNum(int num, sf::Sprite* sprite); // will process a digit into a sprite
+        void checkPellets(Player* player, int& pellet_num, std::array<std::array<StaticEntity*, tile_grid_width>, tile_grid_height>& pellets); // Collision between the player and surrounding pellets
 
-        bool handleEvent();
-        GameState menu();
-        GameState loop();
-        GameState gameOver();
-        GameState gameWon();
+        // Main game functions
+        bool handleEvent();   // Handle SFML events (mainly close window)
+        GameState menu();     // The menu state
+        GameState loop();     // The main game loop
+        GameState gameOver(); // The game over state
+        GameState gameWon();  // The game won state
 
     public:
-        static Game* getInstance();
+        // Singleton related
+        static Game* getInstance(); // returns the current instance of the game
 
+        // Disallow copying
         Game(Game const&) = delete;
         void operator=(Game const&) = delete;
+        // Destructor (only closes the window)
         ~Game();
 
+        // Main game function (the state machine)
         void stateMachine();
 };
