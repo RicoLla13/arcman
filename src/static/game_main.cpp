@@ -6,7 +6,7 @@ Game::Game() {
     this->create(sf::VideoMode(window_width, window_height), window_title);
     this->setFramerateLimit(frame_rate);
     srand(static_cast<unsigned int>(time(0)));
-    logger = Logger::getInstance();
+    this->logger = Logger::getInstance();
 }
 
 Game::~Game() {
@@ -39,7 +39,6 @@ void Game::checkPellets(Player* player, int& pellet_num, std::array<std::array<S
 
     for(auto pellet : around) {
         if(player->collide(pellet)) {
-
             pellet->is_eaten = true;
 
             if(BigPellet* big_pellet = dynamic_cast<BigPellet*>(pellet))
@@ -52,34 +51,35 @@ void Game::checkPellets(Player* player, int& pellet_num, std::array<std::array<S
 
 void Game::stateMachine() {
     bool stop = false;
+    GameState current_state = GameState::INIT;
+
     while(!stop) {
-        switch(this->current_state) {
+        switch(current_state) {
             case GameState::INIT:
                 try {
                     this->loadTextures();
                     current_state = GameState::MENU;
+                    this->logger->log("Game initialized");
                 } catch(CustomException& e) {
                     std::cerr << e.what() << std::endl;
+                    this->logger->log("Encountered error while initializing game");
                     current_state = GameState::CLOSE;
                 }
-                logger->log("Game initialized");
                 break;
             case GameState::MENU:
-                logger->log("Entered menu");
+                this->logger->log("Entered menu");
                 current_state = this->menu();
                 break;
             case GameState::RUN:
-                logger->log("Started a round");
-                // this->initNodes();
-                // this->initPellets();
+                this->logger->log("Started a round");
                 current_state = this->loop();
                 break;
             case GameState::GAME_WON:
-                logger->log("Game won with time: " + std::to_string(player_timer) + " seconds");
+                this->logger->log("Game won with time: " + std::to_string(player_timer) + " seconds");
                 current_state = this->gameWon();
                 break;
             case GameState::GAME_OVER:
-                logger->log("Game lost");
+                this->logger->log("Game lost");
                 current_state = this->gameOver();
                 break;
             default:
@@ -245,18 +245,13 @@ GameState Game::loop() {
     this->initPellets(pellets);
 
     std::vector<Entity*> timer;
-    timer.push_back(new Entity(numbers_texture));
-    timer.push_back(new Entity(numbers_texture));
-    timer.push_back(new Entity(numbers_texture));
-
     std::vector<Entity*> progress;
-    progress.push_back(new Entity(numbers_texture));
-    progress.push_back(new Entity(numbers_texture));
-    progress.push_back(new Entity(numbers_texture));
 
-    for(int i = 0; i < timer.size(); i++) {
+    for(int i = 0; i < 3; i++) {
+        timer.push_back(new Entity(numbers_texture));
         timer[i]->setPosition(i * rect_size, rect_size);
 
+        progress.push_back(new Entity(numbers_texture));
         progress[i]->setPosition((i + 11) * rect_size, rect_size);
     }
 
@@ -264,16 +259,13 @@ GameState Game::loop() {
     player->setTextureOffset(0, 3);
 
     std::vector<Ghost*> ghosts;
-    ghosts.push_back(new Ghost(nodes[22], ghost_texture, ghost_speed, GhostName::PYTHON));
-    ghosts.push_back(new Ghost(nodes[23], ghost_texture, ghost_speed, GhostName::C));
-    ghosts.push_back(new Ghost(nodes[24], ghost_texture, ghost_speed, GhostName::VHDL));
-    for(int i = 0; i < ghosts.size(); i++) {
-        ghosts[i]->setScale(sprite_scale, sprite_scale);
+    for(int i = 0; i < 3; i++) {
+        ghosts.push_back(new Ghost(nodes[22 + i], ghost_texture, ghost_speed, static_cast<GhostName>(i)));
         ghosts[i]->setTextureOffset(2 * i, 4);
     }
 
     int init_pellet_num = 0;
-    for(auto& row : pellets) {
+    for(const auto& row : pellets) {
         for(const auto& sprite : row) {
             if(sprite != nullptr)
                 init_pellet_num++;
@@ -339,7 +331,7 @@ GameState Game::loop() {
         for(const auto& sprite : progress)
             this->draw(*sprite);
 
-        for(auto& row : pellets) {
+        for(const auto& row : pellets) {
             for(const auto& pellet : row)
                 if(pellet != nullptr && !pellet->is_eaten)
                     this->draw(*pellet);
@@ -418,12 +410,9 @@ GameState Game::gameWon() {
     button_exit.setPosition(5 * rect_size, 11 * rect_size);
 
     std::vector<Entity*> timer;
-    timer.push_back(new Entity(numbers_texture));
-    timer.push_back(new Entity(numbers_texture));
-    timer.push_back(new Entity(numbers_texture));
-    timer.push_back(new Entity(numbers_texture));
+    for(int i = 0; i < 4; i++) {
+        timer.push_back(new Entity(numbers_texture));
 
-    for(int i = 0; i < timer.size(); i++) {
         if(i < 3)
             timer[i]->setPosition((7 + i) * rect_size, 7 * rect_size);
         else
@@ -431,8 +420,8 @@ GameState Game::gameWon() {
     }
 
     int seconds = static_cast<int>(player_timer*10);
-
     int seconds_copy = seconds;   
+
     for(int i = timer.size() - 1; i >= 0; i--) {
         processNum(seconds_copy % 10, timer[i]);
         seconds_copy /= 10;

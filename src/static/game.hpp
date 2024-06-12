@@ -39,8 +39,6 @@ class Game : public sf::RenderWindow {
         bool ret_was_pressed = false;
         
         sf::Clock clock;
-        GameState current_state = GameState::INIT;
-
         Logger* logger;
 
         static Game* instance;
