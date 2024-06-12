@@ -1,18 +1,22 @@
 #include "game.hpp"
 
+// Initialize the game instance to null
 Game* Game::instance = nullptr;
 
+// Constructor
 Game::Game() {
-    this->create(sf::VideoMode(window_width, window_height), window_title);
-    this->setFramerateLimit(frame_rate);
-    srand(static_cast<unsigned int>(time(0)));
-    this->logger = Logger::getInstance();
+    this->create(sf::VideoMode(window_width, window_height), window_title); // Create the window
+    this->setFramerateLimit(frame_rate); //  Set the frame rate limit
+    srand(static_cast<unsigned int>(time(0))); // Seed the random number generator
+    this->logger = Logger::getInstance(); // Get the logger instance
 }
 
+// Destructor
 Game::~Game() {
-    this->close();
+    this->close(); // Close the window
 }
 
+// Singleton -> Get the current instance of the game
 Game* Game::getInstance() {
     if(instance == nullptr)
         instance = new Game();
@@ -20,38 +24,50 @@ Game* Game::getInstance() {
     return instance;
 }
 
+// Process a number into a sprite
 void Game::processNum(int num, sf::Sprite* sprite) {
+    // If the sprite does not exist, return
     if(sprite == nullptr)
         return;
 
+    // Set the texture rectangle based on the number
     sprite->setTextureRect(sf::IntRect((num % 5) * sprite_size, num / 5 * sprite_size, sprite_size, sprite_size));
 }
 
+// Check collision between the player and surrounding pellets
 void Game::checkPellets(Player* player, int& pellet_num, std::array<std::array<StaticEntity*, tile_grid_width>, tile_grid_height>& pellets) {
+    // Fetch the player's position
     sf::Vector2f player_pos = player->getPosition();
 
+    // Make a vector with the 4 surrounding pellets
     std::vector<StaticEntity*> around;
 
+    // Calculate the grid position of the player
     int grid_x = static_cast<int>(ceil(player_pos.x / rect_size));
     int grid_y = static_cast<int>(ceil(player_pos.y / rect_size));
 
+    // Add the surrounding pellets to the vector
     around.push_back(pellets[grid_y][grid_x]);
     around.push_back(pellets[grid_y][grid_x + 1]);
     around.push_back(pellets[grid_y + 1][grid_x]);
     around.push_back(pellets[grid_y + 1][grid_x + 1]);
 
+    // For each pellet in the vector, check if it is collided with the player
     for(auto pellet : around) {
         if(player->collide(pellet)) {
             pellet->is_eaten = true;
 
+            // If the pellet is a big pellet, add a bonus to the player
             if(BigPellet* big_pellet = dynamic_cast<BigPellet*>(pellet))
                 player_timer -= big_pellet_bonus;
 
+            // Decrease the pellet number
             pellet_num--;
         }
     }
 }
 
+// Game state machine
 void Game::stateMachine() {
     bool stop = false;
     GameState current_state = GameState::INIT;
