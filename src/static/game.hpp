@@ -32,9 +32,6 @@ class Game : public sf::RenderWindow {
         sf::Texture numbers_texture;
         sf::Texture pellet_texture;
 
-        std::vector<Node*> nodes;
-        std::array<std::array<StaticEntity*, tile_grid_width>, tile_grid_height> pellets;
-
         float player_timer = 0;
 
         bool w_was_pressed = false;
@@ -49,14 +46,14 @@ class Game : public sf::RenderWindow {
         static Game* instance;
         Game();
 
-        void initNodes();
+        void initNodes(std::vector<Node*>& nodes);
         void clearNodes();
-        void initPellets();
+        void initPellets(std::array<std::array<StaticEntity*, tile_grid_width>, tile_grid_height>& pellets);
         void clearPellets();
         void loadTextures();
 
         void processNum(int num, sf::Sprite* sprite);
-        void checkPellets(Player* player, int& pellet_num);
+        void checkPellets(Player* player, int& pellet_num, std::array<std::array<StaticEntity*, tile_grid_width>, tile_grid_height>& pellets);
 
         bool handleEvent();
         GameState menu();

@@ -11,8 +11,6 @@ Game::Game() {
 
 Game::~Game() {
     this->close();
-    this->clearNodes();
-    this->clearPellets();
 }
 
 Game* Game::getInstance() {
@@ -29,7 +27,7 @@ void Game::processNum(int num, sf::Sprite* sprite) {
     sprite->setTextureRect(sf::IntRect((num % 5) * sprite_size, num / 5 * sprite_size, sprite_size, sprite_size));
 }
 
-void Game::checkPellets(Player* player, int& pellet_num) {
+void Game::checkPellets(Player* player, int& pellet_num, std::array<std::array<StaticEntity*, tile_grid_width>, tile_grid_height>& pellets) {
     sf::Vector2f player_pos = player->getPosition();
 
     std::vector<StaticEntity*> around;
@@ -72,8 +70,8 @@ void Game::stateMachine() {
                 break;
             case GameState::RUN:
                 logger->log("Started a round");
-                this->initNodes();
-                this->initPellets();
+                // this->initNodes();
+                // this->initPellets();
                 current_state = this->loop();
                 break;
             case GameState::GAME_WON:
@@ -122,7 +120,7 @@ void Game::loadTextures() {
         throw CustomException("[!] #loadTextures()# -> Game Won image not found!");
 }
 
-void Game::initPellets() {
+void Game::initPellets(std::array<std::array<StaticEntity*, tile_grid_width>, tile_grid_height>& pellets) {
     std::array<std::string, tile_grid_height> level = {
         "123456789ABCDEF",
         "2--------------",
@@ -156,17 +154,6 @@ void Game::initPellets() {
                 default:
                     pellets[i][j] = nullptr;
                     break;
-            }
-        }
-    }
-}
-
-void Game::clearPellets() {
-    for(auto& row : pellets) {
-        for(auto& pellet : row) {
-            if(pellet != nullptr) {
-                delete pellet;
-                pellet = nullptr;
             }
         }
     }
@@ -251,6 +238,12 @@ GameState Game::loop() {
 
     Entity background(maze_texture);
 
+    std::vector<Node*> nodes;
+    std::array<std::array<StaticEntity*, tile_grid_width>, tile_grid_height> pellets;
+
+    this->initNodes(nodes);
+    this->initPellets(pellets);
+
     std::vector<Entity*> timer;
     timer.push_back(new Entity(numbers_texture));
     timer.push_back(new Entity(numbers_texture));
@@ -334,7 +327,7 @@ GameState Game::loop() {
         if(loc_progress < 10)
             progress[1]->setTextureRect(sf::IntRect(0, 0, 0, 0));
 
-        this->checkPellets(player, pellet_num);
+        this->checkPellets(player, pellet_num, pellets);
 
         this->clear();
 
@@ -394,8 +387,19 @@ GameState Game::loop() {
     }
     ghosts.clear();
 
-    this->clearNodes();
-    this->clearPellets();
+    for(auto& row : pellets) {
+        for(auto& pellet : row) {
+            if(pellet != nullptr)
+                delete pellet;
+            pellet = nullptr;
+        }
+    }
+
+    for(auto& node : nodes) {
+        if(node != nullptr)
+            delete node;
+        node = nullptr;
+    }
 
     return result;
 }
