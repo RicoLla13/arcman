@@ -47,13 +47,13 @@ Install the necesarry tools using the command:
 - Debian/Ubuntu:
 
 ```bash
-sudo apt install cmake g++ git
+sudo apt install cmake build-essential git libsfml-dev
 ```
 
 - Arch Linux:
 
 ```bash
-sudo pacman -S cmake gcc git
+sudo pacman -S cmake base-devel git sfml
 ```
 
 ### Compile:
@@ -64,12 +64,10 @@ sudo pacman -S cmake gcc git
 ```bash
 git clone git@gitlab-etu.ing.he-arc.ch:isc/2023-24/niveau-1/1242.2-langagecpp/isc1cd/cpp_filrouge_iscc_arsenescu.git
 ```
-- Navigate to project directory
-- Run:
+- Navigate to project directory and run the install script:
 
 ```bash
-cmake -S . -B build
-cmake --build build
+./install.sh
 ```
 
 ### Run
