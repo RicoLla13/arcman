@@ -1,4 +1,4 @@
-# Motivation and Objectives
+# Arcman - Motivation and Objectives
 
 ## Motivation
 

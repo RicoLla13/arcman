@@ -1,4 +1,4 @@
-# Compilation
+# Arcman - Compilation
 
 ## Prerequisites
 
