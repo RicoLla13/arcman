@@ -47,7 +47,7 @@ Install the necesarry tools using the command:
 - Debian/Ubuntu:
 
 ```bash
-sudo apt install cmake build-essential git libsfml-dev
+sudo apt install cmake build-essential git libsfml-dev libx11-dev libgl1-mesa-dev libudev-dev libopenal-dev libvorbis-dev libflac-dev libxrandr-dev libxcursor-dev
 ```
 
 - Arch Linux:
