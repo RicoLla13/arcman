@@ -2,7 +2,7 @@
 
 ## Motivation
 
-I decided to make **ARCMAN** as my C++ Object-Oriented Programming project because it combines my passion for arcade games (especially Pac-Man) with a practical application of software engineering principles. It offers a hands-on opportunity to explore essential objetc-oriented programming concepts such as inheritance and polymorphism, while also enhancing my proficiency in C++. 
+I decided to make **ARCMAN** as my C++ Object-Oriented Programming project because it combines my passion for arcade games (especially Pac-Man) with a practical application of software engineering principles. It offers a hands-on opportunity to explore essential object-oriented programming concepts such as inheritance and polymorphism, while also enhancing my proficiency in C++. 
 
 Also, I wanted to add things that are specific to an average student studying at "HE-Arc", like the player using the logo colors and the walls of the maze being the same color as the school wals, so the game is fun for my class mates.
 
