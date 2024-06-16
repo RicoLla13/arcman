@@ -379,7 +379,6 @@ GameState Game::loop() {
 
         for(const auto& ghost : ghosts)
             this->draw(*ghost);
-uPumNJFtjQbR_KHFe8SY
         this->display();
 
         // Ghost collision -> game loosing condition
@@ -403,7 +402,7 @@ uPumNJFtjQbR_KHFe8SY
     timer.clear();
 
     for(auto& sprite : progress) {
-        if(sprite != nullptr)uPumNJFtjQbR_KHFe8SY
+        if(sprite != nullptr)
             delete sprite;
         sprite = nullptr;
     }
