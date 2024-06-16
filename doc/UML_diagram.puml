@@ -1,0 +1,206 @@
+@startuml
+enum "Direction" as C_0000733414970125170111
+enum C_0000733414970125170111 {
+UP
+DOWN
+LEFT
+RIGHT
+NONE
+}
+enum "GameState" as C_0004356735495323104445
+enum C_0004356735495323104445 {
+CLOSE
+INIT
+MENU
+RUN
+GAME_WON
+GAME_OVER
+}
+enum "GhostName" as C_0008727714874679225853
+enum C_0008727714874679225853 {
+PYTHON
+C
+VHDL
+}
+class "CustomException" as C_0005382343083901678557
+class C_0005382343083901678557 {
++CustomException(std::string message) : void
+..
++what() const noexcept : const char *
+__
+-message : std::string
+}
+class "Logger" as C_0009718600809915458328
+class C_0009718600809915458328 {
+-Logger() : void
++Logger(const Logger &) = deleted : void
++~Logger() : void
+..
++operator=(const Logger &) = deleted : void
+..
+-getCurrentTime() : std::string
+{static} +getInstance() : Logger *
++log(std::string message) : void
+__
+{static} -instance : Logger *
+-log_file : std::string
+}
+class "VkSurfaceKHR_T" as C_0008430825189918894465
+class C_0008430825189918894465 {
+__
+}
+class "VkAllocationCallbacks" as C_0010944636479912698794
+class C_0010944636479912698794 {
+__
+}
+class "VkInstance_T" as C_0011229604473071678245
+class C_0011229604473071678245 {
+__
+}
+class "Node" as C_0001746392397735786431
+class C_0001746392397735786431 {
++Node(const sf::Vector2f & position) : void
++Node(float x, float y) : void
+..
++getAllNeighbours() const : std::vector<Node *>
++getNeighbour(const Direction & direction) const : Node *
++getPosition() const : sf::Vector2f
++setAllNeighbours(const std::vector<Node *> & neighbors) : void
++setNeighbour(const Direction & direction, Node * node) : void
++setPosition(const sf::Vector2f & position) : void
+__
+-neighbors : std::vector<Node *>
+-position : sf::Vector2f
+}
+class "Entity" as C_0007855897608752530395
+class C_0007855897608752530395 {
++Entity(const sf::Texture & texture) : void
+..
++setTextureOffset(int x_off, int y_off) : void
+__
+}
+class "StaticEntity" as C_0007371219344885894656
+class C_0007371219344885894656 {
++StaticEntity(const sf::Vector2f & position, const sf::Texture & texture) : void
+__
++is_eaten : bool
+}
+abstract "MovingEntity" as C_0013664139401231192714
+abstract C_0013664139401231192714 {
++MovingEntity(Node * start_node, const sf::Texture & texture, float speed) : void
+..
+#getNewTarget() const : Node *
+#move(float delta_time) : void
+#nodeOvershoot() const : bool
+#start() : void
+#stop() : void
+{abstract} +update(float delta_time) = 0 : void
+__
+#animation_offset : int
+#current_node : Node *
+#current_speed : float
+#direction : Direction
+#elapsed_time : float
+#is_moving : bool
+#speed_norm : float
+#switch_animation_ms : float
+#target_node : Node *
+#velocity : sf::Vector2f
+}
+class "Ghost" as C_0011549137534131300510
+class C_0011549137534131300510 {
++Ghost(Node * start_node, const sf::Texture & texture, float speed, GhostName identifier) : void
+..
+-getNewDirection() : Direction
++update(float delta_time) : void
+__
+-identifier : GhostName
+}
+class "Player" as C_0003605716991605700936
+class C_0003605716991605700936 {
++Player(Node * start_node, const sf::Texture & texture, float speed) : void
+..
++collide(StaticEntity * entity) : bool
++collideGhosts(const std::vector<Ghost *> ghosts) : bool
+-getInput() : Direction
++update(float delta_time) : void
+__
+}
+class "SmallPellet" as C_0008370011551019634678
+class C_0008370011551019634678 {
++SmallPellet(const sf::Vector2f & position, const sf::Texture & texture) : void
+__
+}
+class "BigPellet" as C_0004471835298934869981
+class C_0004471835298934869981 {
++BigPellet(const sf::Vector2f & position, const sf::Texture & texture) : void
+__
+}
+class "Game" as C_0017470460303031448044
+class C_0017470460303031448044 {
+-Game() : void
++Game(const Game &) = deleted : void
++~Game() : void
+..
++operator=(const Game &) = deleted : void
+..
+-checkPellets(Player * player, int & pellet_num, std::array<std::array<StaticEntity *,tile_grid_width>,tile_grid_height> & pellets) : void
+-gameOver() : GameState
+-gameWon() : GameState
+{static} +getInstance() : Game *
+-handleEvent() : bool
+-initNodes(std::vector<Node *> & nodes) : void
+-initPellets(std::array<std::array<StaticEntity *,tile_grid_width>,tile_grid_height> & pellets) : void
+-loadTextures() : void
+-loop() : GameState
+-menu() : GameState
+-processNum(int num, sf::Sprite * sprite) : void
++stateMachine() : void
+__
+-button_texture : sf::Texture
+-clock : sf::Clock
+-game_over_texture : sf::Texture
+-game_won_texture : sf::Texture
+-ghost_texture : sf::Texture
+{static} -instance : Game *
+-logger : Logger *
+-maze_texture : sf::Texture
+-menu_texture : sf::Texture
+-numbers_texture : sf::Texture
+-pellet_texture : sf::Texture
+-player_texture : sf::Texture
+-player_timer : float
+-ret_was_pressed : bool
+-s_was_pressed : bool
+-w_was_pressed : bool
+-window_title : std::string
+}
+C_0009718600809915458328 --> C_0009718600809915458328 : -instance
+C_0001746392397735786431 ..> C_0000733414970125170111
+C_0001746392397735786431 --> C_0001746392397735786431 : -neighbors
+C_0007855897608752530395 <|-- C_0007371219344885894656
+C_0013664139401231192714 o-- C_0000733414970125170111 : #direction
+C_0013664139401231192714 --> C_0001746392397735786431 : #current_node
+C_0013664139401231192714 --> C_0001746392397735786431 : #target_node
+C_0007855897608752530395 <|-- C_0013664139401231192714
+C_0011549137534131300510 ..> C_0000733414970125170111
+C_0011549137534131300510 ..> C_0001746392397735786431
+C_0011549137534131300510 o-- C_0008727714874679225853 : -identifier
+C_0013664139401231192714 <|-- C_0011549137534131300510
+C_0003605716991605700936 ..> C_0000733414970125170111
+C_0003605716991605700936 ..> C_0001746392397735786431
+C_0003605716991605700936 ..> C_0007371219344885894656
+C_0003605716991605700936 ..> C_0011549137534131300510
+C_0013664139401231192714 <|-- C_0003605716991605700936
+C_0007371219344885894656 <|-- C_0008370011551019634678
+C_0007371219344885894656 <|-- C_0004471835298934869981
+C_0017470460303031448044 ..> C_0001746392397735786431
+C_0017470460303031448044 ..> C_0007371219344885894656
+C_0017470460303031448044 ..> C_0003605716991605700936
+C_0017470460303031448044 ..> C_0004356735495323104445
+C_0017470460303031448044 --> C_0009718600809915458328 : -logger
+C_0017470460303031448044 --> C_0017470460303031448044 : -instance
+
+'Generated with clang-uml, version 0.5.2-54-g7d859db
+'LLVM version clang version 17.0.6
+@enduml
