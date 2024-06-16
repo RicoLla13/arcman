@@ -69,7 +69,7 @@ void Game::checkPellets(Player* player, int& pellet_num, std::array<std::array<S
 
 // Game state machine
 void Game::stateMachine() {
-    bool stop = false;
+    bool stop = false; // Stop flag
     GameState current_state = GameState::INIT;
 
     while(!stop) {
@@ -108,6 +108,7 @@ void Game::stateMachine() {
     }
 }
 
+// Handle close event of SFML window
 bool Game::handleEvent() {
     sf::Event event;
     while(this->pollEvent(event)) {
@@ -140,6 +141,7 @@ void Game::loadTextures() {
 }
 
 void Game::initPellets(std::array<std::array<StaticEntity*, tile_grid_width>, tile_grid_height>& pellets) {
+    // Text representation of the level
     std::array<std::string, tile_grid_height> level = {
         "123456789ABCDEF",
         "2--------------",
@@ -161,6 +163,9 @@ void Game::initPellets(std::array<std::array<StaticEntity*, tile_grid_width>, ti
         "8--------------"
     };
 
+    // Loop to initialize pellets with the given rules
+    // * -> small pellet
+    // # -> big pellet
     for(int i = 0; i < tile_grid_height; i++) {
         for(int j = 0; j < tile_grid_width; j++) {
             switch(level[i][j]) {
@@ -205,16 +210,19 @@ GameState Game::menu() {
         bool s_is_pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
         bool ret_is_pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Return);
 
+        // If W is pressed go up with the button selector, or wrap
         if(!w_was_pressed && w_is_pressed) {
             selection--;
             if(selection < 0)
                 selection = 1;
         }
+        // If S is pressed go down with the button selector, or wrap
         if(!s_was_pressed && s_is_pressed) {
             selection++;
             if(selection > 1)
                 selection = 0;
         }
+        // If Return is pressed, select the button
         if(!ret_was_pressed && ret_is_pressed) {
             switch(selection) {
                 case 0:
@@ -228,6 +236,7 @@ GameState Game::menu() {
         s_was_pressed = s_is_pressed;
         ret_was_pressed = ret_is_pressed;
 
+        // Update button graphics
         switch(selection) {
             case 0:
                 button_play.setTextureRect(sf::IntRect(0, sprite_size, 5 * sprite_size , sprite_size));
@@ -313,13 +322,16 @@ GameState Game::loop() {
             break;
         }
 
+        // Compute delta time and update player timer with it
         delta_time = clock.restart().asSeconds();
         player_timer += delta_time;
 
+        // Update entities with delta time
         player->update(delta_time);
         for(auto& ghost : ghosts)
             ghost->update(delta_time);
 
+        // Compute seconds and progress and update label textures
         int seconds = static_cast<int>(player_timer);
         int seconds_copy = seconds;
         int loc_progress = 100 - static_cast<int>(
@@ -344,6 +356,7 @@ GameState Game::loop() {
         if(loc_progress < 10)
             progress[1]->setTextureRect(sf::IntRect(0, 0, 0, 0));
 
+        // Pellet collision
         this->checkPellets(player, pellet_num, pellets);
 
         this->clear();
@@ -366,19 +379,22 @@ GameState Game::loop() {
 
         for(const auto& ghost : ghosts)
             this->draw(*ghost);
-
+uPumNJFtjQbR_KHFe8SY
         this->display();
 
+        // Ghost collision -> game loosing condition
         if(player->collideGhosts(ghosts)) {
             result = GameState::GAME_OVER;
             break;
         }
+        // Check if the player won
         if(pellet_num == 0) {
             result = GameState::GAME_WON;
             break;
         }
     }
 
+    // Clean the memory
     for(auto& sprite : timer) {
         if(sprite != nullptr)
             delete sprite;
@@ -387,7 +403,7 @@ GameState Game::loop() {
     timer.clear();
 
     for(auto& sprite : progress) {
-        if(sprite != nullptr)
+        if(sprite != nullptr)uPumNJFtjQbR_KHFe8SY
             delete sprite;
         sprite = nullptr;
     }
