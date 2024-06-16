@@ -12,9 +12,13 @@ Here, you will find the source code, build instructions and a little documentati
 
 ## 📈 How to Use
 
-If you want to skip the compilation phase, you can grab the release corresponding to your operating system (to do after project is finished).
+If you want to skip the compilation phase, you can grab the release corresponding to your operating system.
 
 If not, you can go to the [Compilation](doc/compilation.md) section.
+
+In the menus, use W and S to move up and down, and ENTER to select.
+
+In the actual game, use WASD for 4 directional movement. Press P while in the game as a backdoor.
 
 ## 🛠️ Dependencies
 
@@ -31,4 +35,4 @@ If not, you can go to the [Compilation](doc/compilation.md) section.
 
 * Operating system: Arch Linux (& Debian, Windows for testing)
 * Text editor: Neovim
-* Diagrams: draw.io
+* Diagrams: [clang-uml](https://clang-uml.github.io/) and [plantuml](https://http://www.plantuml.com/)
