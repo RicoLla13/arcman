@@ -32,11 +32,11 @@ void Game::initNodes(std::vector<Node*>& nodes) {
 
     // define node connections
     // node A
-    nodes[0]->setNeighbour(Direction::RIGHT, nodes[1]);     // node B
-    nodes[0]->setNeighbour(Direction::DOWN, nodes[6]);      // node G
+    nodes[0]->setNeighbour(Direction::RIGHT, nodes[1]);     
+    nodes[0]->setNeighbour(Direction::DOWN, nodes[6]);      
     // node B
-    nodes[1]->setNeighbour(Direction::LEFT, nodes[0]);      // node A
-    nodes[1]->setNeighbour(Direction::DOWN, nodes[4]);      // node E
+    nodes[1]->setNeighbour(Direction::LEFT, nodes[0]);      
+    nodes[1]->setNeighbour(Direction::DOWN, nodes[4]);      
     // node C
     nodes[2]->setNeighbour(Direction::RIGHT, nodes[3]);
     nodes[2]->setNeighbour(Direction::DOWN, nodes[5]);
